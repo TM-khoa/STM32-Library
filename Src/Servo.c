@@ -7,18 +7,30 @@
 #include "Servo.h"
 #ifdef CONFIG_USE_SERVO
 
-Servo sv;
+Servo *svTemp;
 
-void Servo_Config(TIM_HandleTypeDef *htim,uint32_t TIM_CHANNEL)
+HAL_StatusTypeDef Servo_Config(Servo *sv, TIM_HandleTypeDef *htim, uint32_t TIM_CHANNEL)
 {
-	sv.htim = htim;
-	sv.TIM_CHANNEL = TIM_CHANNEL;
+	if(!sv) return HAL_ERROR;
+	sv->htim = htim;
+	sv->TIM_CHANNEL = TIM_CHANNEL;
+	return HAL_OK;
 }
 
+HAL_StatusTypeDef Servo_Start()
+{
+	return SERVO_START;
+}
+HAL_StatusTypeDef Servo_SetTarget(Servo *sv)
+{
+	if(!sv) return HAL_ERROR;
+	svTemp = sv;
+	return HAL_OK;
+}
 HAL_StatusTypeDef Servo_SetAngle(uint8_t Angle)
 {
 	if(!SERVO_ANGLE_VALID(Angle)) return HAL_ERROR;
-	SERVO_MOVE(Angle);
+	SERVO_TURN(Angle);
 	return HAL_OK;
 }
 

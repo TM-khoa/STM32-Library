@@ -34,21 +34,22 @@ typedef enum {
 	TB6600_EN,
 }pinName;
 
-#define pulsePort dev->pulse.port
-#define pulsePin dev->pulse.pin
-#define dirPort dev->dir.port
-#define dirPin dev->dir.pin
-#define enPort dev->en.port
-#define enPin dev->en.pin
+#define pulsePort devTemp->pulse.port
+#define pulsePin devTemp->pulse.pin
+#define dirPort devTemp->dir.port
+#define dirPin devTemp->dir.pin
+#define enPort devTemp->en.port
+#define enPin devTemp->en.pin
 
-#define TB6600_WRITE(PIN,LOGIC) ( 	((PIN) == TB6600_PULSE)? 	HAL_GPIO_WritePin(pulsePort,pulsePin,(LOGIC)) 	:	\
+#define TB6600_WRITE(PIN,LOGIC) ( 	((PIN) == TB6600_PULSE) ? 	HAL_GPIO_WritePin(pulsePort,pulsePin,(LOGIC)) 	:	\
 									((PIN) == TB6600_DIR) 	?	HAL_GPIO_WritePin(dirPort,dirPin,(LOGIC)) 		: 	\
 									((PIN) == TB6600_EN) 	?	HAL_GPIO_WritePin(enPort,enPin,(LOGIC)) 		: 0	\
 								)
 
 HAL_StatusTypeDef TB6600_AssignPin(TB6600* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
-HAL_StatusTypeDef TB6600_SetDir(TB6600* dev, StepState dir);
-HAL_StatusTypeDef TB6600_SetActive(TB6600* dev, StepState en);
-HAL_StatusTypeDef TB6600_StepAuto(TB6600* dev, GPIO_PinState state);
+HAL_StatusTypeDef TB6600_SetDir(StepState dir);
+HAL_StatusTypeDef TB6600_SetActive(StepState en);
+HAL_StatusTypeDef TB6600_StepAuto(GPIO_PinState state);
+HAL_StatusTypeDef TB6600_SetTarget(TB6600* dev);
 #endif
 #endif
