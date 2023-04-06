@@ -44,6 +44,7 @@ typedef enum{
 HAL_StatusTypeDef HX711_AssignPin(HX711* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
 HAL_StatusTypeDef HX711_AssignEXTILine(HX711* dev,IRQn_Type IRQ);
 uint32_t HX711_ReadValue();
+uint32_t HX711_ReadAverage();
 void HX711_SetTarget(HX711* dev);
 #endif /* INC_HX711_H_ */
 #endif

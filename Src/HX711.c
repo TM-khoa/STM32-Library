@@ -70,11 +70,16 @@ uint32_t HX711_ReadValue()
 }
 uint32_t HX711_ReadAverage()
 {
-	static uint32_t Val=0;
+	static uint32_t Val=0,ValTemp;
 	static uint8_t count=0;
 	if(count < HX711_AVERAGE_SAMPLE){
+		ValTemp += HX711_ReadValue();
+		count++;
+	} else {
+		ValTemp/=HX711_AVERAGE_SAMPLE;
+		Val = ValTemp;
 		count = 0;
-		Val += HX711_ReadValue();
-	} else return Val/HX711_AVERAGE_SAMPLE;
+	}
+	return Val;
 }
 #endif
