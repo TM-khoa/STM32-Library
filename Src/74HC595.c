@@ -7,6 +7,7 @@
 
 #include "74HC595.h"
 #ifdef CONFIG_USE_74HC595
+HC595 *devTemp;
 HAL_StatusTypeDef HC595_ConfigOnePin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
 {
 	if(!dev) return HAL_ERROR;
@@ -24,6 +25,7 @@ HAL_StatusTypeDef HC595_ConfigOnePin(HC595* dev,GPIO_TypeDef *port,uint16_t pin,
 		dev->latch.pin = pin;
 		break;
 	}
+	devTemp = dev;
 	return HAL_OK;
 }
 HAL_StatusTypeDef HC595_TestPin(HC595* dev,pinName pinName)

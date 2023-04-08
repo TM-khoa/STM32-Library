@@ -29,6 +29,7 @@ HAL_StatusTypeDef TB6600_AssignPin(TB6600* dev,GPIO_TypeDef *port,uint16_t pin, 
 		dev->en.pin = pin;
 		break;
 	}
+	devTemp = dev
 	return HAL_OK;
 }
 

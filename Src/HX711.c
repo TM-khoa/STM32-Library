@@ -20,7 +20,7 @@
 
 HX711* devTemp;
 
-HAL_StatusTypeDef HX711_AssignPin(HX711* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
+HX711_Status_t HX711_AssignPin(HX711* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
 {
 	if(!dev) return HAL_ERROR;
 	switch(pinName){
@@ -33,15 +33,15 @@ HAL_StatusTypeDef HX711_AssignPin(HX711* dev,GPIO_TypeDef *port,uint16_t pin, pi
 		dev->Data.pin = pin;
 		break;
 	}
-
+	devTemp = dev;
 	return HAL_OK;
 }
 
-HAL_StatusTypeDef HX711_AssignEXTILine(HX711* dev,IRQn_Type IRQ)
+HX711_Status_t HX711_AssignEXTILine(HX711* dev,IRQn_Type IRQ)
 {
-	if(!dev) return HAL_OK;
+	if(!dev) return HX711_ERROR;
 	dev->EXTI_LINE = IRQ;
-	return HAL_OK;
+	return HX711_OK;
 }
 
 void HX711_SetTarget(HX711* dev)
