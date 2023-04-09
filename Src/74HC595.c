@@ -7,8 +7,8 @@
 
 #include "74HC595.h"
 #ifdef CONFIG_USE_74HC595
-HC595 *devTemp;
-HAL_StatusTypeDef HC595_ConfigOnePin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
+HC595 *devTemp = NULL;
+HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
 {
 	if(!dev) return HAL_ERROR;
 	switch(pinName){
@@ -28,9 +28,9 @@ HAL_StatusTypeDef HC595_ConfigOnePin(HC595* dev,GPIO_TypeDef *port,uint16_t pin,
 	devTemp = dev;
 	return HAL_OK;
 }
-HAL_StatusTypeDef HC595_TestPin(HC595* dev,pinName pinName)
+void HC595_TestPin(pinName pinName)
 {
-	if(!dev) return HAL_ERROR;
+	while(!devTemp);
 	HC595_WRITE(pinName,1);
 	HAL_Delay(1000);
 	HC595_WRITE(pinName,0);
@@ -38,9 +38,9 @@ HAL_StatusTypeDef HC595_TestPin(HC595* dev,pinName pinName)
 	return HAL_OK;
 }
 
-HAL_StatusTypeDef HC595_Send_Data(HC595* dev,uint16_t dt)
+HAL_StatusTypeDef HC595_Send_Data(uint16_t dt)
 {
-	if(!dev) return HAL_ERROR;
+	if(!devTemp) return HAL_ERROR;
 	for(int i = 0;i<8;i++)
 	{
 		if(dt & 0x80)

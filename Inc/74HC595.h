@@ -20,7 +20,7 @@ typedef struct HC595{
 	pinConfig ds;
 	pinConfig clk;
 	pinConfig latch;
-} HC595;
+}HC595;
 
 typedef enum{
 	HC595_LATCH,
@@ -28,20 +28,20 @@ typedef enum{
 	HC595_DS
 }pinName;
 
-#define latchPort dev->latch.port
-#define latchPin dev->latch.pin
-#define clkPort dev->clk.port
-#define clkPin dev->clk.pin
-#define dsPort dev->ds.port
-#define dsPin dev->ds.pin
+#define latchPort devTemp->latch.port
+#define latchPin devTemp->latch.pin
+#define clkPort devTemp->clk.port
+#define clkPin devTemp->clk.pin
+#define dsPort devTemp->ds.port
+#define dsPin devTemp->ds.pin
 
 #define HC595_WRITE(PIN,LOGIC) ( 	((PIN) == HC595_LATCH)? 	HAL_GPIO_WritePin(latchPort,latchPin,(LOGIC)) 	:	\
 									((PIN) == HC595_CLK) 	?	HAL_GPIO_WritePin(clkPort,clkPin,(LOGIC)) 		: 	\
 									((PIN) == HC595_DS) 	?	HAL_GPIO_WritePin(dsPort,dsPin,(LOGIC)) 		: 0	\
 								)
 
-HAL_StatusTypeDef HC595_Send_Data(HC595* dev,uint16_t dt);
-HAL_StatusTypeDef HC595_TestPin(HC595* dev,pinName pin);
-HAL_StatusTypeDef HC595_ConfigOnePin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
+HAL_StatusTypeDef HC595_Send_Data(uint16_t dt);
+HAL_StatusTypeDef HC595_TestPin(pinName pin);
+HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
 #endif /* INC_74HC595_H_ */
 #endif
