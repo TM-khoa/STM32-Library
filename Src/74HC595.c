@@ -32,7 +32,7 @@ HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pi
 	devTemp = dev;
 	return HAL_OK;
 }
-HAL_StatusTypeDef HC595_TestPin(pinName pinName)
+void HC595_TestPin(pinName pinName)
 {
 	while(!devTemp);
 	HC595_WRITE(pinName,1);
