@@ -53,3 +53,4 @@ HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pi
 void HC595_TestOutput();
 #endif /* INC_74HC595_H_ */
 #endif
+
