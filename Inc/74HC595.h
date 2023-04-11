@@ -39,9 +39,10 @@ typedef enum{
 									((PIN) == HC595_CLK) 	?	HAL_GPIO_WritePin(clkPort,clkPin,(LOGIC)) 		: 	\
 									((PIN) == HC595_DS) 	?	HAL_GPIO_WritePin(dsPort,dsPin,(LOGIC)) 		: 0	\
 								)
-
-HAL_StatusTypeDef HC595_Send_Data(uint16_t dt);
 HAL_StatusTypeDef HC595_TestPin(pinName pin);
 HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
+HAL_StatusTypeDef HC595_Send_Data(uint8_t dt[],uint8_t n);
+HAL_StatusTypeDef HC595_Test_OutputPin(uint8_t n,uint8_t hc_max);
 #endif /* INC_74HC595_H_ */
 #endif
+
