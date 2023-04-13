@@ -56,14 +56,14 @@ uint32_t HX711_ReadValue()
 	HX711_DISABLE_DOUT_INTERRUPT;
 	HX711_SCK_WRITE(0);
 	buffer = 0;
-	for (int i = 0; i<24; i++){
+	for (int i = 0; i < 24; i++){
 		HX711_SCK_WRITE(1);
-		buffer = buffer << 1;
+		buffer <<= 1;
 		HX711_SCK_WRITE(0);
 		if (HX711_DATA_READ) buffer++;
 	}
 	HX711_SCK_WRITE(1);
-	buffer = buffer^0x8000;
+	buffer ^= 0x8000;
 	HX711_SCK_WRITE(0);
 	HX711_ENABLE_DOUT_INTERRUPT;
 	return buffer;

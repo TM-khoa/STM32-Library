@@ -10,9 +10,9 @@
 #include "main.h"
 #ifdef CONFIG_USE_HX711
 
-typedef GPIO_TypeDef HX711_Port_t
-typedef uint16_t HX711_Pin_t 
-typedef uint32_t HX711_EXTI_LINE_t 
+typedef GPIO_TypeDef HX711_Port_t;
+typedef uint16_t HX711_Pin_t ;
+typedef uint32_t HX711_EXTI_LINE_t ;
 
 typedef struct{
 	HX711_Port_t *port;
