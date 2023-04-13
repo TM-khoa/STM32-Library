@@ -16,6 +16,10 @@
 #define SIZE_BUF 4
 #define I2C_READ 0x01
 #define I2C_WRITE 0
+#define pmax   50
+#define pmin  0
+#define digout_pmin 1638
+#define digout_pmax 14745
 typedef struct AMS5915{
 	uint8_t buf[SIZE_BUF];
 	I2C_HandleTypeDef *hi2c;
@@ -23,8 +27,7 @@ typedef struct AMS5915{
 
 HAL_StatusTypeDef AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c);
 HAL_StatusTypeDef AMS5915_ReadRAW(AMS5915 *ams);
-
+float AMS5915_CalPressure(AMS5915 *ams);
 
 #endif
-
 #endif /*  defined(CONFIG_USE_AMS5915) */

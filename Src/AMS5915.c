@@ -32,4 +32,14 @@ HAL_StatusTypeDef AMS5915_ReadRAW(AMS5915 *ams)
 	return HAL_I2C_Master_Receive_IT(ams->hi2c, ams->hi2c->Devaddress, ams->buf, 4);
 }
 
+float AMS5915_CalPressure(AMS5915 *ams)
+{
+	static uint16_t sensp ;
+	static float p, digout_p;
+	sensp = (digout_pmax - digout_pmin) / (pmax - pmin);
+	digout_p = ((ams->buf[0] & 0x3f) << 8) | (ams->buf[1]);
+	p = (digout_p - digout_pmin) / sensp + pmin;
+	return p;
+}
+
 #endif /* defined(CONFIG_USE_AMS5915) */
