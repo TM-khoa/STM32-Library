@@ -6,6 +6,7 @@
  */
 #include "AMS5915.h"
 #ifdef CONFIG_USE_AMS5915
+AMS5915 *_ams;
 /**
  * @brief Initializes the AMS5915 pressure sensor.
  *
@@ -14,9 +15,9 @@
  *
  * @param ams Pointer to an AMS5915 struct to handle pressure sensor operations.
  * @param hi2c Pointer to an I2C_HandleTypeDef instance representing the I2C line connected to the pressure sensor.
- * @return HAL_StatusTypeDef value indicating the result of the initialization operation.
+ * @return AMS5915_Status_t value indicating the result of the initialization operation.
  */
-HAL_StatusTypeDef AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c)
+AMS5915_Status_t AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c)
 {
 	if(!ams && !hi2c) return HAL_ERROR;
 	ams->hi2c = hi2c;
@@ -24,15 +25,23 @@ HAL_StatusTypeDef AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c)
 	return CHECK_DEVICE_READY;
 }
 
+
+void AMS5915_SetTarget(AMS5915 *ams)
+{
+	if(!ams) return AMS5915_INVALID_ARG;
+	_ams = ams;
+}
+
 /**
  * @brief Read raw data from AMS5915 pressure sensor.
  * @param ams Pointer to an AMS5915 struct to handle pressure sensor operations.
- * @return HAL_StatusTypeDef
+ * @return AMS5915_Status_t
  * @note Need to use void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) in main
  */
-HAL_StatusTypeDef AMS5915_ReadRaw(AMS5915 *ams)
+AMS5915_Status_t AMS5915_ReadRaw(AMS5915 *ams)
 {
-	if(!ams) return HAL_ERROR;
+	if(!ams && !_ams) return AMS5915_INVALID_ARG;
+	if(ams) _ams = ams;
 	return READ_RAW_DATA;
 }
 
@@ -44,11 +53,11 @@ HAL_StatusTypeDef AMS5915_ReadRaw(AMS5915 *ams)
  */
 float AMS5915_CalPressure(AMS5915 *ams)
 {
-	static uint16_t sensp ;
-	static float p, digout_p;
-	sensp = (digout_pmax - digout_pmin) / (pmax - pmin);
+	uint16_t sensp ;
+	float p, digout_p;
+	sensp = (AMS5915_digout_pmax - AMS5915_digout_pmin) / (AMS5915_pmax - AMS5915_pmin);
 	digout_p = ((ams->buf[0] & 0x3f) << 8) | (ams->buf[1]);
-	p = (digout_p - digout_pmin) / sensp + pmin;
+	p = (digout_p - AMS5915_digout_pmin) / sensp + AMS5915_pmin;
 	return p;
 }
 
