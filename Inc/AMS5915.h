@@ -20,13 +20,19 @@
 #define pmin  0
 #define digout_pmin 1638
 #define digout_pmax 14745
+
+#define CHECK_DEVICE_READY (HAL_I2C_IsDeviceReady(hi2c, ams->hi2c->Devaddress, 3, 500))
+#define READ_RAW_DATA (HAL_I2C_Master_Receive_IT(ams->hi2c, ams->hi2c->Devaddress, ams->buf, 4))
+
 typedef struct AMS5915{
 	uint8_t buf[SIZE_BUF];
 	I2C_HandleTypeDef *hi2c;
 }AMS5915;
 
+
+
 HAL_StatusTypeDef AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c);
-HAL_StatusTypeDef AMS5915_ReadRAW(AMS5915 *ams);
+HAL_StatusTypeDef AMS5915_ReadRaw(AMS5915 *ams);
 float AMS5915_CalPressure(AMS5915 *ams);
 
 #endif
