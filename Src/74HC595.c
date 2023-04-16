@@ -7,30 +7,30 @@
 
 #include "74HC595.h"
 #ifdef CONFIG_USE_74HC595
-HC595 *devTemp = NULL;
-HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
+HC595 *_hc595 = NULL;
+HC595_Status_t HC595_AssignPin(HC595* hc595,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
 {
-	if(!dev) return HAL_ERROR;
+	if(!_hc595) return HC595_INVALID_ARG;
 	switch(pinName){
 	case HC595_CLK:
-		dev->clk.port = port;
-		dev->clk.pin = pin;
+		hc595->clk.port = port;
+		hc595->clk.pin = pin;
 		break;
 	case HC595_DS:
-		dev->ds.port = port;
-		dev->ds.pin = pin;
+		hc595->ds.port = port;
+		hc595->ds.pin = pin;
 		break;
 	case HC595_LATCH:
-		dev->latch.port = port;
-		dev->latch.pin = pin;
+		hc595->latch.port = port;
+		hc595->latch.pin = pin;
 		break;
 	case HC595_OE:
-		dev->oe.port = port;
-		dev->oe.pin = pin;
+		hc595->oe.port = port;
+		hc595->oe.pin = pin;
 		break;
 	}
-	devTemp = dev;
-	return HAL_OK;
+	_hc595 = hc595;
+	return HC595_OK;
 }
 
 /**
@@ -44,7 +44,7 @@ HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pi
  */
 HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n)
 {
-	if(!devTemp && !n) return ESP_ERR_INVALID_ARG;
+	if(!_hc595 && !n) return HC595_INVALID_ARG;
 	for(uint8_t i=0; i<(n*8); i++)
 	{
 		if(*(dt+(i/8)) & 0x80) HC595_WRITE(HC595_DS,1);
@@ -57,14 +57,14 @@ HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n)
 	}
 	HC595_WRITE(HC595_LATCH,0);
 	HC595_WRITE(HC595_LATCH,1);
-	return ESP_OK;
+	return HC595_OK;
 }
 // (Qn output)
 // n là ouput Qn cần test ( từ Q0-> Qn max)
 // hc_max là số hc595 hiện có
 HAL_StatusTypeDef HC595_Test_OutputPin(uint8_t n,uint8_t hc_max)
 {
-	if(!devTemp) return HAL_ERROR;
+	if(!_hc595) return HAL_ERROR;
 	// Ý tưởng : Khi muốn gửi đến 1 bit bất kỳ bắt buộc phải gửi từ Qn max trước
 	// => Tính toán và gửi các dummy byte sau đó sẽ gửi bit cần gửi
 	// Ví dụ cho code bên dưới : n = 13, hc_max = 5 ( có 5 HC595 => Qn max = 39, nhưng chỉ muốn test Qn với n = 13)
@@ -113,7 +113,7 @@ void HC595_TestOutput()
 
 void HC595_TestPin(pinName pinName)
 {
-	while(!devTemp);
+	while(!_hc595);
 	HC595_WRITE(pinName,1);
 	DELAY_MS(2000);
 	HC595_WRITE(pinName,0);

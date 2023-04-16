@@ -30,14 +30,20 @@ typedef enum{
 	HC595_OE
 }pinName;
 
-#define latchPort devTemp->latch.port
-#define latchPin devTemp->latch.pin
-#define clkPort devTemp->clk.port
-#define clkPin devTemp->clk.pin
-#define dsPort devTemp->ds.port
-#define dsPin devTemp->ds.pin
-#define oePort devTemp->oe.port
-#define oePin devTemp->oe.pin
+typedef enum{
+	HC595_OK,
+	HC595_ERROR,
+	HC595_INVALID_ARG,
+}HC595_Status_t;
+
+#define latchPin _hc595->latch.pin
+#define clkPin _hc595->clk.pin
+#define dsPin _hc595->ds.pin
+#define oePin _hc595->oe.pin
+#define latchPort _hc595->latch.port
+#define clkPort _hc595->clk.port
+#define dsPort _hc595->ds.port
+#define oePort _hc595->oe.port
 
 #define HC595_WRITE(PIN,LOGIC) ( 	((PIN) == HC595_LATCH)  ? 	HAL_GPIO_WritePin(latchPort,latchPin,(LOGIC)) 	:	\
 									((PIN) == HC595_CLK) 	?	HAL_GPIO_WritePin(clkPort,clkPin,(LOGIC)) 		: 	\
@@ -51,7 +57,7 @@ HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n);
 void HC595_TestPin(pinName pin);
 void HC595_Disable();
 void HC595_Enable();
-HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
+HC595_Status_t HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
 void HC595_TestOutput();
 #endif /* INC_74HC595_H_ */
 #endif
