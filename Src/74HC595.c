@@ -32,45 +32,32 @@ HAL_StatusTypeDef HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pi
 	devTemp = dev;
 	return HAL_OK;
 }
-void HC595_TestPin(pinName pinName)
-{
-	while(!devTemp);
-	HC595_WRITE(pinName,1);
-	HAL_Delay(2000);
-	HC595_WRITE(pinName,0);
-	HAL_Delay(2000);
-}
 
-void HC595_Enable()
+/**
+ * @brief Sends data to cascaded 74HC595 shift registers.
+ *
+ * This function shifts data into multiple cascaded 74HC595 registers.
+ *
+ * @param dt Pointer to an array of uint8_t data to be shifted into the registers.
+ * @param n Number of cascaded 74HC595 shift registers.
+ * @return HC595_Status_t status code indicating the result of the operation.
+ */
+HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n)
 {
-	HC595_WRITE(HC595_OE,0);
-}
-
-void HC595_Disable()
-{
-	HC595_WRITE(HC595_OE,1);
-}
-// Bit đầu tiên sẽ là Q cuối cùng của 74HC595(tính cả nối tiếp)
-HAL_StatusTypeDef HC595_Send_Data(uint8_t dt[],uint8_t n)
-{
-	if(!devTemp) return HAL_ERROR;
-	for(int x = 0;x<n;x++)
+	if(!devTemp && !n) return ESP_ERR_INVALID_ARG;
+	for(uint8_t i=0; i<(n*8); i++)
 	{
-		for(int i = 0;i<8;i++)
-		{
-			if(dt[x] & 0x80)
-				HC595_WRITE(HC595_DS,1);
-			else
-				HC595_WRITE(HC595_DS,0);
-
-			HC595_WRITE(HC595_CLK,0);
-			HC595_WRITE(HC595_CLK,1);
-			dt[x] <<= 1;
-		}
-		HC595_WRITE(HC595_LATCH,0);
-		HC595_WRITE(HC595_LATCH,1);
+		if(*(dt+(i/8)) & 0x80) HC595_WRITE(HC595_DS,1);
+		else HC595_WRITE(HC595_DS,0);
+		HC595_WRITE(HC595_CLK,0);
+		HC595_WRITE(HC595_CLK,0);
+		HC595_WRITE(HC595_CLK,1);
+		HC595_WRITE(HC595_CLK,1);
+		*(dt+(i/8)) <<= 1;
 	}
-	return HAL_OK;
+	HC595_WRITE(HC595_LATCH,0);
+	HC595_WRITE(HC595_LATCH,1);
+	return ESP_OK;
 }
 // (Qn output)
 // n là ouput Qn cần test ( từ Q0-> Qn max)
@@ -108,10 +95,39 @@ HAL_StatusTypeDef HC595_Test_OutputPin(uint8_t n,uint8_t hc_max)
 
 void HC595_TestOutput()
 {
-	HC595_Send_Data(0x55);
-	HAL_Delay(2000);
-	HC595_Send_Data(0x55<<1);
-	HAL_Delay(2000);
+	static uint16_t dataOriginal= 0x0200;
+	static uint8_t shft=0;
+	uint8_t data[2];
+	shft++;
+	dataOriginal>>=1;
+	dataOriginal|=0x0200;
+	if(shft==10) {
+		shft = 0;
+		dataOriginal = 0x0200;
+	}
+	data[0]=dataOriginal >> 8;
+	data[1]=dataOriginal;
+	HC595_Send_Data(data,2);
+	DELAY_MS(100);
+}
+
+void HC595_TestPin(pinName pinName)
+{
+	while(!devTemp);
+	HC595_WRITE(pinName,1);
+	DELAY_MS(2000);
+	HC595_WRITE(pinName,0);
+	DELAY_MS(2000);
+}
+
+void HC595_Enable()
+{
+	HC595_WRITE(HC595_OE,0);
+}
+
+void HC595_Disable()
+{
+	HC595_WRITE(HC595_OE,1);
 }
 #endif
 

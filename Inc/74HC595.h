@@ -39,13 +39,15 @@ typedef enum{
 #define oePort devTemp->oe.port
 #define oePin devTemp->oe.pin
 
-#define HC595_WRITE(PIN,LOGIC) ( 	((PIN) == HC595_LATCH)? 	HAL_GPIO_WritePin(latchPort,latchPin,(LOGIC)) 	:	\
+#define HC595_WRITE(PIN,LOGIC) ( 	((PIN) == HC595_LATCH)  ? 	HAL_GPIO_WritePin(latchPort,latchPin,(LOGIC)) 	:	\
 									((PIN) == HC595_CLK) 	?	HAL_GPIO_WritePin(clkPort,clkPin,(LOGIC)) 		: 	\
 									((PIN) == HC595_OE) 	?	HAL_GPIO_WritePin(oePort,oePin,(LOGIC)) 		: 	\
 									((PIN) == HC595_DS) 	?	HAL_GPIO_WritePin(dsPort,dsPin,(LOGIC)) 		: 0	\
 								)
 
-HAL_StatusTypeDef HC595_Send_Data(uint16_t dt);
+#define DELAY_MS(X) (HAL_Delay(X))
+
+HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n);
 void HC595_TestPin(pinName pin);
 void HC595_Disable();
 void HC595_Enable();
