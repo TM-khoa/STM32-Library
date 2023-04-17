@@ -10,7 +10,7 @@
 HC595 *_hc595 = NULL;
 HC595_Status_t HC595_AssignPin(HC595* hc595,GPIO_TypeDef *port,uint16_t pin, pinName pinName)
 {
-	if(!_hc595) return HC595_INVALID_ARG;
+	if(!hc595) return HC595_INVALID_ARG;
 	switch(pinName){
 	case HC595_CLK:
 		hc595->clk.port = port;

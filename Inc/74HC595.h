@@ -54,10 +54,10 @@ typedef enum{
 #define DELAY_MS(X) (HAL_Delay(X))
 
 HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n);
+HC595_Status_t HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
 void HC595_TestPin(pinName pin);
 void HC595_Disable();
 void HC595_Enable();
-HC595_Status_t HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
 void HC595_TestOutput();
 #endif /* INC_74HC595_H_ */
 #endif
