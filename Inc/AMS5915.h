@@ -36,6 +36,7 @@ typedef enum{
 }AMS5915_Status_t;
 
 AMS5915_Status_t AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c);
+AMS5915_Status_t AMS5915_SetTarget(AMS5915 *ams);
 AMS5915_Status_t AMS5915_ReadRaw(AMS5915 *ams);
 float AMS5915_CalPressure(AMS5915 *ams);
 

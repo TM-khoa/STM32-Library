@@ -26,10 +26,11 @@ AMS5915_Status_t AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c)
 }
 
 
-void AMS5915_SetTarget(AMS5915 *ams)
+AMS5915_Status_t AMS5915_SetTarget(AMS5915 *ams)
 {
 	if(!ams) return AMS5915_INVALID_ARG;
 	_ams = ams;
+	return AMS5915_OK;
 }
 
 /**
