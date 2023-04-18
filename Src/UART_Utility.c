@@ -15,17 +15,18 @@ void UART_Util_BeginToGetMessage(UART_HandleTypeDef *huart,uint8_t *MesgBuffer,c
 	_util.huart = huart;
 	charEndOfMessage=CharEndOfMessage;
 	buf = MesgBuffer;
+	HAL_UART_Receive_IT(huart, bufTemp, 1);
 }
 
 void UART_Util_GetMessage_IT_Callback(UART_HandleTypeDef *huart){
 	if(huart->Instance == UART->Instance &&
 		!UART_UTIL_CHECKFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE))
 	{
-		HAL_UART_Receive_IT(UART, bufTemp, 1);
 		strcat((char*)buf,(char*)bufTemp);
 		if(!strcmp((const char*)bufTemp,charEndOfMessage)){
 			UART_UTIL_SETFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
 		}
+		HAL_UART_Receive_IT(UART, bufTemp, 1);
 	}
 }
 
