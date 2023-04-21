@@ -120,10 +120,11 @@ void HC595_ClearByteOutput(uint32_t value,uint8_t pos)
 	_hc595->data&=~(value<<pos);
 }
 
-void HC595_SetTarget(HC595 *hc595)
+HC595_Status_t HC595_SetTarget(HC595 *hc595)
 {
 	if(!hc595) return HC595_ERROR;
 	_hc595 = hc595;
+	return HC595_OK;
 }
 
 void HC595_TestOutput()
@@ -140,7 +141,7 @@ void HC595_TestOutput()
 	}
 	data[0]=dataOriginal >> 8;
 	data[1]=dataOriginal;
-	HC595_Send_Data(data,2);
+	HC595_Send_Data(data,2,0,true);
 	DELAY_MS(100);
 }
 
