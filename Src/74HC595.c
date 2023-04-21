@@ -85,6 +85,8 @@ HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n,bool ClearData,uint8_t LSB_
 	        a = *(dt+(i/8-1));
 	    }
 	}
+	HC595_WRITE(HC595_LATCH,0);
+	HC595_WRITE(HC595_LATCH,1);
 	return HC595_OK;
 }
 
