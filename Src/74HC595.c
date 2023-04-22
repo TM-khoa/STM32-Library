@@ -60,18 +60,19 @@ static inline void ByteSlitting(uint32_t value, uint8_t *byte_array, bool LSB_FI
  * @param n Number of cascaded 74HC595 shift registers.
  * @return HC595_Status_t status code indicating the result of the operation.
  */
-HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n,bool ClearData,uint8_t LSB_FIRST)
+HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n,uint8_t LSB_FIRST)
 {
 	if(!_hc595 && !n) return HC595_INVALID_ARG;
 	if(n > HC595_MAX_CASCADE) return HC595_BEYOND_MAX_CASCADE;
 	// Use internal buffer to shift out if dt is NULL
-	uint8_t a;
 	if(!dt && n < 5) {
 	    uint8_t Temp[4];
 	    ByteSlitting(_hc595->data,Temp,LSB_FIRST);
 	    dt = Temp;
 	}
-	a = *(dt+(n-1));
+	uint8_t a;
+	if(LSB_FIRST) a = *dt;
+	else a = *(dt+(n-1));
 	for(int8_t i=(n*8)-1; i > -1; i--){
 	    if(a&0x80) HC595_WRITE(HC595_DS,1);
 	    else HC595_WRITE(HC595_DS,0);
@@ -80,10 +81,10 @@ HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n,bool ClearData,uint8_t LSB_
 		HC595_WRITE(HC595_CLK,1);
 		HC595_WRITE(HC595_CLK,1);
 		a <<= 1;
-	    if(i%8 == 0) {
-	        if(ClearData) *(dt+(i/8)) = a;
-	        a = *(dt+(i/8-1));
-	    }
+		if((i+1)%8 == 0) {
+			if(LSB_FIRST) a = *(dt+((i+1)/8));
+			else a = *(dt+(n-1-((i+1)/8)));
+		}
 	}
 	HC595_WRITE(HC595_LATCH,0);
 	HC595_WRITE(HC595_LATCH,1);
@@ -143,7 +144,7 @@ void HC595_TestOutput()
 	}
 	data[0]=dataOriginal >> 8;
 	data[1]=dataOriginal;
-	HC595_Send_Data(data,2,0,true);
+	HC595_Send_Data(data,2,true);
 	DELAY_MS(100);
 }
 
