@@ -11,11 +11,20 @@
 
 UART_Utility_t *_util;
 
-void UART_Util_BeginToGetMessage(UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage){
-	_util->huart = huart;
-	charEndOfMessage=CharEndOfMessage;
+void UART_Util_BeginToGetMessage(UART_Utility_t *utillity,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage)
+{
+	if(!utillity) return;
+	_util = utillity;
+	UART = huart;
+	charEndOfMessage = CharEndOfMessage;
 	buf = MesgBuffer;
 	HAL_UART_Receive_IT(huart, bufTemp, 1);
+}
+
+void UART_Util_SetTarget(UART_Utility_t *utillity)
+{
+	if(!utillity) return;
+	_util = utillity;
 }
 
 void UART_Util_GetMessage_IT_Callback(UART_HandleTypeDef *huart){
@@ -34,7 +43,7 @@ void UART_Util_GetMessage_IT_Callback(UART_HandleTypeDef *huart){
 bool UART_Util_CheckGetMessageComplete(bool ClearAfterCheck){
 	if(ClearAfterCheck){
 		uint8_t a = UART_UTIL_CHECKFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
-		if(a)UART_UTIL_CLEARFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
+		if (a) UART_UTIL_CLEARFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
 		return a;
 	}
 	return UART_UTIL_CHECKFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);

@@ -33,8 +33,9 @@ typedef struct UART_Utility_t {
 #define buf _util->buf
 #define utilFlag _util->flag
 
-void UART_Util_BeginToGetMessage(UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char* CharEndOfMessage);
+void UART_Util_BeginToGetMessage(UART_Utility_t *utillity,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage);
 void UART_Util_GetMessage_IT_Callback(UART_HandleTypeDef *huart);
+void UART_Util_SetTarget(UART_Utility_t *utillity);
 bool UART_Util_CheckGetMessageComplete(bool ClearAfterCheck);
 #endif
 #endif
