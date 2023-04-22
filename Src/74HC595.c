@@ -53,21 +53,28 @@ static inline void ByteSlitting(uint32_t value, uint8_t *byte_array, bool LSB_FI
 
 /**
  * @brief Sends data to cascaded 74HC595 shift registers.
- *
  * This function shifts data into multiple cascaded 74HC595 registers.
+ *
+ * Convention:
+ * The first 74HC595[0] that connected to MCU via pin 14(DS or serial data pin), pin 9 connected
+ * to the next 74HC595.
+ * The last 74HC595[n] pin 9 is not connect, pin 14 connected to previous 74HC595.
+ * The first byte data will send to the last 74HC595[n]
+ * The last byte data will send to the first 74HC595[0].
  *
  * @param dt Pointer to an array of uint8_t data to be shifted into the registers.
  * @param n Number of cascaded 74HC595 shift registers.
+ * @param MSB_FIRST send MSB byte to the last HC595[n]
  * @return HC595_Status_t status code indicating the result of the operation.
  */
-HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n,uint8_t LSB_FIRST)
+HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST)
 {
 	if(!_hc595 && !n) return HC595_INVALID_ARG;
 	if(n > HC595_MAX_CASCADE) return HC595_BEYOND_MAX_CASCADE;
 	// Use internal buffer to shift out if dt is NULL
 	if(!dt && n < 5) {
 	    uint8_t Temp[4];
-	    ByteSlitting(_hc595->data,Temp,LSB_FIRST);
+	    ByteSlitting(_hc595->data,Temp,MSB_FIRST);
 	    dt = Temp;
 	}
 	uint8_t a;
@@ -81,10 +88,9 @@ HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n,uint8_t LSB_FIRST)
 		HC595_WRITE(HC595_CLK,1);
 		HC595_WRITE(HC595_CLK,1);
 		a <<= 1;
-		if((i+1)%8 == 0) {
-			if(LSB_FIRST) a = *(dt+((i+1)/8));
-			else a = *(dt+(n-1-((i+1)/8)));
-		}
+	    if(i%8 == 0) {
+	        a = *(dt+(i/8-1));
+	    }
 	}
 	HC595_WRITE(HC595_LATCH,0);
 	HC595_WRITE(HC595_LATCH,1);
@@ -144,7 +150,7 @@ void HC595_TestOutput()
 	}
 	data[0]=dataOriginal >> 8;
 	data[1]=dataOriginal;
-	HC595_Send_Data(data,2,true);
+	HC595_ShiftOut(data,2,true);
 	DELAY_MS(100);
 }
 

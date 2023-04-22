@@ -60,7 +60,7 @@ typedef enum{
 	HC595_BEYOND_MAX_CASCADE,
 }HC595_Status_t;
 
-HC595_Status_t HC595_Send_Data(uint8_t *dt,uint8_t n,uint8_t LSB_FIRST);
+HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST);
 HC595_Status_t HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
 HC595_Status_t HC595_SetTarget(HC595 *hc595);
 void HC595_SetBitOutput(uint8_t pos);
