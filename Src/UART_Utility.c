@@ -9,10 +9,10 @@
 #include "UART_Utility.h"
 #ifdef CONFIG_USE_UART_UTILITY
 
-UART_Utility_t _util;
+UART_Utility_t *_util;
 
 void UART_Util_BeginToGetMessage(UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage){
-	_util.huart = huart;
+	_util->huart = huart;
 	charEndOfMessage=CharEndOfMessage;
 	buf = MesgBuffer;
 	HAL_UART_Receive_IT(huart, bufTemp, 1);

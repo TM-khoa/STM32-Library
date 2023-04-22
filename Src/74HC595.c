@@ -72,14 +72,13 @@ HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST)
 	if(!_hc595 && !n) return HC595_INVALID_ARG;
 	if(n > HC595_MAX_CASCADE) return HC595_BEYOND_MAX_CASCADE;
 	// Use internal buffer to shift out if dt is NULL
+	uint8_t a;
 	if(!dt && n < 5) {
 	    uint8_t Temp[4];
 	    ByteSlitting(_hc595->data,Temp,MSB_FIRST);
 	    dt = Temp;
 	}
-	uint8_t a;
-	if(LSB_FIRST) a = *dt;
-	else a = *(dt+(n-1));
+	a = *(dt+(n-1));
 	for(int8_t i=(n*8)-1; i > -1; i--){
 	    if(a&0x80) HC595_WRITE(HC595_DS,1);
 	    else HC595_WRITE(HC595_DS,0);

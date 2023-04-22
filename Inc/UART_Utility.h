@@ -27,11 +27,11 @@ typedef struct UART_Utility_t {
 #define UART_UTIL_FLAG_MESSAGE_GET_COMPLETE (1<<0)
 #define UART_UTIL_ENABLE_LISTEN
 
-#define UART _util.huart
-#define charEndOfMessage _util.charEndOfMessage
-#define bufTemp _util.bufTemp
-#define buf _util.buf
-#define utilFlag _util.flag
+#define UART _util->huart
+#define charEndOfMessage _util->charEndOfMessage
+#define bufTemp _util->bufTemp
+#define buf _util->buf
+#define utilFlag _util->flag
 
 void UART_Util_BeginToGetMessage(UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char* CharEndOfMessage);
 void UART_Util_GetMessage_IT_Callback(UART_HandleTypeDef *huart);
