@@ -19,10 +19,11 @@ AMS5915 *_ams;
  */
 AMS5915_Status_t AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c)
 {
-	if(!ams && !hi2c) return HAL_ERROR;
+	if(!ams && !hi2c) return AMS5915_INVALID_ARG;
 	ams->hi2c = hi2c;
 	ams->hi2c->Devaddress = AMS5915_ADDR << 1;
-	return CHECK_DEVICE_READY;
+	while(CHECK_DEVICE_READY!=HAL_OK);
+	return AMS5915_OK;
 }
 
 
