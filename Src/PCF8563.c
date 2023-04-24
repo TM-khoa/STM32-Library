@@ -14,7 +14,6 @@ static inline void PCF8563_Write_AND(uint8_t Address, uint8_t data);
 static inline uint8_t BCD_Decode(uint8_t BCD_value);
 static inline uint8_t BCD_Encode(uint8_t Value);
 
-
 PCF8563_Handle *_pcf8563;
 void PCF8563_Init(PCF8563_Handle *rtc,I2C_HandleTypeDef *hi2c){
 	if(!rtc) return;
@@ -23,7 +22,8 @@ void PCF8563_Init(PCF8563_Handle *rtc,I2C_HandleTypeDef *hi2c){
 	else {if(!_pcf8563->hi2c) return;}
 	_pcf8563->hi2c->Devaddress = PCF8563_address << 1;
 	while(PCF8563_CHECKREADY!=HAL_OK);
-	PCF8563_Read(Control_status_1);
+	PCF8563_StopClock();
+	PCF8563_Write_AND(Control_status_1, (uint8_t)~PCF8563_CTRL_STATUS1_TEST1);
 	PCF8563_Write_AND(Control_status_1, (uint8_t)~PCF8563_CTRL_STATUS1_TESTC);
 	PCF8563_Write_AND(CLKOUT_control, (uint8_t)~PCF8563_CLKOUT_FE);
 }
@@ -57,7 +57,7 @@ void PCF8563_CLKOUT_SetFreq(PCF8563_CLKOUT freq)
 		PCF8563_Write_AND(CLKOUT_control,~(1<<0));break;
 		PCF8563_Write_OR(CLKOUT_control,(1<<1)); break;
 	case CLKOUT_1_Hz:
-		PCF8563_Write_OR(CLKOUT_control,(1<<1)| (1<<0)); break;
+		PCF8563_Write_OR(CLKOUT_control,(1<<1)|(1<<0)); break;
 	default: return;
 	}
 }
@@ -104,13 +104,13 @@ void PCF8563_WriteTimeRegisters(PCF8563_Time *time)
 		&&  t[4] < 6
 		&&  t[5] > 1 && t[5] < 12
 		&&  t[6] < 99){
+	}
 		uint8_t temp[2];
 		for(uint8_t i = 0;i < PCF8563_TIME_REGISTER_RANGE;i++){
 			temp[0]=i+PCF8563_TIME_REGISTER_OFFSET;
 			temp[1]=t[i];
 			while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, temp, 2,HAL_MAX_DELAY)!=HAL_OK);
 		}
-	}
 }
 uint8_t PCF8563_ReadTimeRegisters()
 {

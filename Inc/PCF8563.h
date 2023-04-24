@@ -89,6 +89,9 @@ void PCF8563_CLKOUT_SetFreq(PCF8563_CLKOUT freq);
 void PCF8563_CLKOUT_Enable(bool Enable);
 void PCF8563_StartClock();
 void PCF8563_StopClock();
+
+
+
 //general control
 void PCF8563_Init();
 void PCF8563_StopClock();
