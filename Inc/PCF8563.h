@@ -69,6 +69,9 @@ enum registers
 #define PCF8563_CHECKREADY HAL_I2C_IsDeviceReady(hi2c, (PCF8563_address << 1), 3, HAL_MAX_DELAY)
 #define PCF8563_READ()
 #define PCF8563_WRITE_BIT(REG,BIT_MASK)
+#define PCF8563_TIME_REGISTER_OFFSET 2
+#define PCF8563_TIME_REGISTER_RANGE 7
+
 #define PCF8563_I2C _pcf8563->hi2c
 #define pcfSecond _pcf8563->t.second
 #define pcfMinute _pcf8563->t.minute
@@ -81,6 +84,7 @@ enum registers
 uint8_t PCF8563_Read(uint8_t REG);
 void PCF8563_Write(uint8_t REG,uint8_t Value);
 uint8_t PCF8563_ReadTimeRegisters();
+void PCF8563_WriteTimeRegisters(PCF8563_Time *t);
 uint8_t BCD_Decode(uint8_t BCD_value);
 uint8_t BCD_Encode(uint8_t Value);
 //general control

@@ -36,8 +36,40 @@ uint8_t PCF8563_Read(uint8_t REG)
 
 void PCF8563_WriteTimeRegisters(PCF8563_Time *t)
 {
-	uint8_t i2cTXData[2]={REG,Value};
-	while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, i2cTXData, 2,HAL_MAX_DELAY)!=HAL_OK);
+	uint8_t t[8]={0};
+	if(t){
+		t[0] = BCD_Encode(t->second);
+		t[1] = BCD_Encode(t->minute);
+		t[2] = BCD_Encode(t->hour);
+		t[3] = BCD_Encode(t->day);
+		t[4] = BCD_Encode(t->weekday);
+		t[5] = BCD_Encode(t->month);
+		t[6] = BCD_Encode(t->year);
+	} else {
+		t[0] = BCD_Encode(pcfSecond);
+		t[1] = BCD_Encode(pcfMinute);
+		t[2] = BCD_Encode(pcfHour);
+		t[3] = BCD_Encode(pcfDay);
+		t[4] = BCD_Encode(pcfWeekday);
+		t[5] = BCD_Encode(pcfMonth);
+		t[6] = BCD_Encode(pcfYear);
+	}
+	if(		t[0] < 60
+		&&  t[1] < 60
+		&&  t[2] < 24
+		&&  t[3] > 1 && t[3] < 32
+		&&  t[4] < 6
+		&&  t[5] > 1 && t[5] < 12
+		&&  t[6] < 99){
+		uint8_t temp[2];
+		for(uint8_t i = 0;i < PCF8563_TIME_REGISTER_RANGE;i++){
+			temp[0]=i+PCF8563_TIME_REGISTER_OFFSET;
+			temp[1]=i2cTXData[i];
+			HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, temp, 2,HAL_MAX_DELAY);
+
+		}
+	}
+
 
 }
 uint8_t PCF8563_ReadTimeRegisters()
