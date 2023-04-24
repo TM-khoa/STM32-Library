@@ -66,16 +66,23 @@ enum registers
 #define MASK_AIE (1<<1)
 #define MASK_TIE (1<<0)
 
-#define rtc8563I2C _rtc->hi2c
 #define PCF8563_CHECKREADY HAL_I2C_IsDeviceReady(hi2c, (PCF8563_address << 1), 3, HAL_MAX_DELAY)
 #define PCF8563_READ()
 #define PCF8563_WRITE_BIT(REG,BIT_MASK)
-
+#define PCF8563_I2C _pcf8563->hi2c
+#define pcfSecond _pcf8563->t.second
+#define pcfMinute _pcf8563->t.minute
+#define pcfHour _pcf8563->t.hour
+#define pcfDay _pcf8563->t.day
+#define pcfMonth _pcf8563->t.month
+#define pcfWeekday _pcf8563->t.weekday
+#define pcfYear _pcf8563->t.year
 
 uint8_t PCF8563_Read(uint8_t REG);
 void PCF8563_Write(uint8_t REG,uint8_t Value);
-uint8_t PCF8563_BCD_Decode(uint8_t BCD_value);
-uint8_t PCF8563_BCD_Encode(uint8_t Value);
+uint8_t PCF8563_ReadTimeRegisters();
+uint8_t BCD_Decode(uint8_t BCD_value);
+uint8_t BCD_Encode(uint8_t Value);
 //general control
 void PCF8563_Init();
 void PCF8563_StopClock();
