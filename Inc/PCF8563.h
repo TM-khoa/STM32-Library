@@ -10,6 +10,7 @@
 #define INC_PCF8563_H_
 #include "main.h"
 #ifdef CONFIG_USE_PCF8563
+#include "stdbool.h"
 typedef struct PCF8563_Time
 {
   uint8_t year;
@@ -26,15 +27,15 @@ typedef struct PCF8563_Handle{
 	PCF8563_Time t;
 }PCF8563_Handle;
 
-enum PCF8563_CLKOUT
+typedef enum
 {
   CLKOUT_32768_Hz,
   CLKOUT_1024_Hz,
   CLKOUT_32_Hz,
   CLKOUT_1_Hz,
-};
+}PCF8563_CLKOUT;
 
-enum registers
+typedef enum
 {
     PCF8563_address  = 0x51,
     Control_status_1 = 0x00,
@@ -53,18 +54,17 @@ enum registers
     CLKOUT_control   = 0x0D,
     Timer_control    = 0x0E,
     Timer            = 0x0F,
-};
+}registers;
 
-#define MASK_CONTROL_STATUS_1 0xA8
-#define MASK_TEST1 (1<<7)
-#define MASK_STOP (1<<5)
-#define MASK_TESTC (1<<3)
-#define MASK_CONTROL_STATUS_2 0x1F
-#define MASK_TI_TP (1<<4)
-#define MASK_AF (1<<3)
-#define MASK_TF (1<<2)
-#define MASK_AIE (1<<1)
-#define MASK_TIE (1<<0)
+#define PCF8563_CTRL_STATUS1_TEST1 (1<<7)
+#define PCF8563_CTRL_STATUS1_STOP (1<<5)
+#define PCF8563_CTRL_STATUS1_TESTC (1<<3)
+#define PCF8563_CTRL_STATUS2_TI_TP (1<<4)
+#define PCF8563_CTRL_STATUS2_AF (1<<3)
+#define PCF8563_CTRL_STATUS2_TF (1<<2)
+#define PCF8563_CTRL_STATUS2_AIE (1<<1)
+#define PCF8563_CTRL_STATUS2_TIE (1<<0)
+#define PCF8563_CLKOUT_FE (1<<7)
 
 #define PCF8563_CHECKREADY HAL_I2C_IsDeviceReady(hi2c, (PCF8563_address << 1), 3, HAL_MAX_DELAY)
 #define PCF8563_READ()
@@ -85,8 +85,10 @@ uint8_t PCF8563_Read(uint8_t REG);
 void PCF8563_Write(uint8_t REG,uint8_t Value);
 uint8_t PCF8563_ReadTimeRegisters();
 void PCF8563_WriteTimeRegisters(PCF8563_Time *t);
-uint8_t BCD_Decode(uint8_t BCD_value);
-uint8_t BCD_Encode(uint8_t Value);
+void PCF8563_CLKOUT_SetFreq(PCF8563_CLKOUT freq);
+void PCF8563_CLKOUT_Enable(bool Enable);
+void PCF8563_StartClock();
+void PCF8563_StopClock();
 //general control
 void PCF8563_Init();
 void PCF8563_StopClock();
