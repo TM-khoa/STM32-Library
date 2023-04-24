@@ -108,11 +108,9 @@ void PCF8563_WriteTimeRegisters(PCF8563_Time *time)
 		for(uint8_t i = 0;i < PCF8563_TIME_REGISTER_RANGE;i++){
 			temp[0]=i+PCF8563_TIME_REGISTER_OFFSET;
 			temp[1]=t[i];
-			HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, temp, 2,HAL_MAX_DELAY);
+			while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, temp, 2,HAL_MAX_DELAY)!=HAL_OK);
 		}
 	}
-
-
 }
 uint8_t PCF8563_ReadTimeRegisters()
 {
