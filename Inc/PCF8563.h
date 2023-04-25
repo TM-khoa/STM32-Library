@@ -81,31 +81,17 @@ typedef enum
 #define pcfWeekday _pcf8563->t.weekday
 #define pcfYear _pcf8563->t.year
 
-uint8_t PCF8563_Read(uint8_t REG);
-void PCF8563_Write(uint8_t REG,uint8_t Value);
+
 uint8_t PCF8563_ReadTimeRegisters();
 void PCF8563_WriteTimeRegisters(PCF8563_Time *t);
 void PCF8563_CLKOUT_SetFreq(PCF8563_CLKOUT freq);
 void PCF8563_CLKOUT_Enable(bool Enable);
 void PCF8563_StartClock();
 void PCF8563_StopClock();
+void PCF8563_Init(PCF8563_Handle *rtc,I2C_HandleTypeDef *hi2c);
 
-
-
-//general control
-void PCF8563_Init();
-void PCF8563_StopClock();
-void PCF8563_StartClock();
-//time settings functions
-void PCF8563_SetYear(uint8_t year);
-void PCF8563_SetMonth(uint8_t month);
-void PCF8563_SetDay(uint8_t day);
-void PCF8563_SetHour(uint8_t hour);
-void PCF8563_SetMin(uint8_t min);
-void PCF8563_SetSecond(uint8_t second);
-//clkout output
-void PCF8563_EnableClkOutput();
-void PCF8563_DisableClkOutput();
-//void PCF8563_SetClkOutputFrequency(PCF8563_CLKOUT frequency);
+uint8_t PCF8563_Read(uint8_t REG);
+void PCF8563_Write_AND(uint8_t Address, uint8_t data);
+void PCF8563_Write_OR(uint8_t Address, uint8_t data);
 #endif
 #endif /* INC_PCF8563_H_ */
