@@ -11,42 +11,46 @@
 
 UART_Utility_t *_util;
 
-void UART_Util_BeginToGetMessage(UART_Utility_t *utillity,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage)
+void UART_Util_BeginToGetMessage(UART_Utility_t *util,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage)
 {
-	if(!utillity) return;
-	_util = utillity;
+	if(!util) return;
+	_util = util;
 	UART = huart;
 	charEndOfMessage = CharEndOfMessage;
 	buf = MesgBuffer;
 	HAL_UART_Receive_IT(huart, bufTemp, 1);
 }
 
-void UART_Util_SetTarget(UART_Utility_t *utillity)
+void UART_Util_SetTarget(UART_Utility_t *util)
 {
-	if(!utillity) return;
-	_util = utillity;
+	if(!util) return;
+	_util = util;
 }
 
-void UART_Util_GetMessage_IT_Callback(UART_HandleTypeDef *huart){
+void UART_Util_GetMessage_IT_Callback(UART_Utility_t *util, UART_HandleTypeDef *huart){
 	static uint8_t count=0;
+	if(util) _util=util;
 	if(huart->Instance == UART->Instance)
 	{
 		HAL_UART_Receive_IT(UART, bufTemp, 1);
 		count++;
 		strcat((char*)buf,(char*)bufTemp);
 		if(!strcmp((char*)bufTemp,charEndOfMessage)){
-			UART_UTIL_SETFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
+			SETFLAG(utilFlag,UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
 		}
 	}
 }
 
-bool UART_Util_CheckGetMessageComplete(bool ClearAfterCheck){
+bool UART_Util_CheckGetMessageComplete(UART_Utility_t *util, bool ClearAfterCheck)
+{
+	if(util) _util=util;
 	if(ClearAfterCheck){
-		uint8_t a = UART_UTIL_CHECKFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
-		if (a) UART_UTIL_CLEARFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
+		uint8_t a = CHECKFLAG(utilFlag,UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
+		if (a) CLEARFLAG(utilFlag,UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
 		return a;
+
 	}
-	return UART_UTIL_CHECKFLAG(UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
+	return CHECKFLAG(utilFlag,UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
 }
 
 

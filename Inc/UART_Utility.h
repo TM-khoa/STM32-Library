@@ -20,12 +20,7 @@ typedef struct UART_Utility_t {
 	uint8_t bufTemp[1];
 	uint16_t flag;
 }UART_Utility_t;
-
-#define UART_UTIL_CHECKFLAG(FLAG) (utilFlag & FLAG ? 1 : 0)
-#define UART_UTIL_SETFLAG(FLAG) (utilFlag |= (FLAG))
-#define UART_UTIL_CLEARFLAG(FLAG) (utilFlag &= ~(FLAG))
 #define UART_UTIL_FLAG_MESSAGE_GET_COMPLETE (1<<0)
-#define UART_UTIL_ENABLE_LISTEN
 
 #define UART _util->huart
 #define charEndOfMessage _util->charEndOfMessage
@@ -33,10 +28,10 @@ typedef struct UART_Utility_t {
 #define buf _util->buf
 #define utilFlag _util->flag
 
-void UART_Util_BeginToGetMessage(UART_Utility_t *utillity,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage);
-void UART_Util_GetMessage_IT_Callback(UART_HandleTypeDef *huart);
+void UART_Util_BeginToGetMessage(UART_Utility_t *util,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage);
+void UART_Util_GetMessage_IT_Callback(UART_Utility_t *util, UART_HandleTypeDef *huart);
 void UART_Util_SetTarget(UART_Utility_t *utillity);
-bool UART_Util_CheckGetMessageComplete(bool ClearAfterCheck);
+bool UART_Util_CheckGetMessageComplete(UART_Utility_t *util, bool ClearAfterCheck);
 #endif
 #endif
 
