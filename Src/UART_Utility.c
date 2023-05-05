@@ -17,8 +17,8 @@ void UART_Util_BeginToGetMessage(UART_Utility_t *util,UART_HandleTypeDef *huart,
 	_util = util;
 	UART = huart;
 	charEndOfMessage = CharEndOfMessage;
-	buf = MesgBuffer;
-	HAL_UART_Receive_IT(huart, bufTemp, 1);
+	utilBuf = MesgBuffer;
+	HAL_UART_Receive_IT(huart, utilBufTemp, 1);
 }
 
 void UART_Util_SetTarget(UART_Utility_t *util)
@@ -32,10 +32,10 @@ void UART_Util_GetMessage_IT_Callback(UART_Utility_t *util, UART_HandleTypeDef *
 	if(util) _util=util;
 	if(huart->Instance == UART->Instance)
 	{
-		HAL_UART_Receive_IT(UART, bufTemp, 1);
+		HAL_UART_Receive_IT(UART, utilBufTemp, 1);
 		count++;
-		strcat((char*)buf,(char*)bufTemp);
-		if(!strcmp((char*)bufTemp,charEndOfMessage)){
+		strcat((char*)utilBuf,(char*)utilBufTemp);
+		if(!strcmp((char*)utilBufTemp,charEndOfMessage)){
 			SETFLAG(utilFlag,UART_UTIL_FLAG_MESSAGE_GET_COMPLETE);
 		}
 	}

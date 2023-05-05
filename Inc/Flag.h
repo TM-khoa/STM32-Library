@@ -11,8 +11,11 @@
 #ifdef CONFIG_USE_FLAG
 
 #define CHECKFLAG(FlagGroup,FlagBit) (FlagGroup & FlagBit ? 1 : 0)
-#define SETFLAG(FlagGroup,FLAG) (FlagGroup |= (FlagBit))
-#define CLEARFLAG(FlagGroup,FLAG) (FlagGroup &= ~(FlagBit))
+#define SETFLAG(FlagGroup,FlagBit) (FlagGroup |= (FlagBit))
+#define CLEARFLAG(FlagGroup,FlagBit) (FlagGroup &= ~(FlagBit))
+
+
+typedef uint8_t FlagGroup_t;
 
 #endif /*CONFIG_USE_FLAG*/
 #endif /*_FLAG_H_*/

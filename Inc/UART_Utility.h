@@ -24,8 +24,8 @@ typedef struct UART_Utility_t {
 
 #define UART _util->huart
 #define charEndOfMessage _util->charEndOfMessage
-#define bufTemp _util->bufTemp
-#define buf _util->buf
+#define utilBufTemp _util->bufTemp
+#define utilBuf _util->buf
 #define utilFlag _util->flag
 
 void UART_Util_BeginToGetMessage(UART_Utility_t *util,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage);

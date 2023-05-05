@@ -8,46 +8,33 @@
 #include "StringUtility.h"
 #ifdef CONFIG_USE_STRING_UTILITY
 
-char ArrBuffStr[MAX_STRING_BUFFER][MAX_STRING_LENGTH];
+char ArrBuffStr[NUM_STRING][STRING_LENGTH];
 
-StringStatus_t StrUtil_TokenMessage(char *String)
+StringStatus_t StrUtil_TokenMessage(char **TokenBuffer,char *String,char* delimiter)
 {
-	if(!String) return STRING_NULL;
+	if(!String || !TokenBuffer) return STRING_NULL;
 	char *p;
 	uint8_t i=1;
-	p = strtok(String," ,{};");
-	if(strlen(p) < MAX_STRING_LENGTH){
+	p = strtok(String,delimiter);
+	if(strlen(p) < STRING_LENGTH){
 		strcpy(ArrBuffStr[0],p);
-	} else return STRING_TOKEN_LENGTH_TOO_LONG;
+	} else return STRING_LENGTH_TOO_LONG;
 	while(p!=NULL){
-		p = strtok(NULL," ,{};");
-		if(strlen(p) < MAX_STRING_LENGTH) strcpy(ArrBuffStr[i],p);
-		else return STRING_TOKEN_LENGTH_TOO_LONG;
+		p = strtok(NULL,delimiter);
+		if(!p) break;
+		if(strlen(p) < STRING_LENGTH) strcpy(ArrBuffStr[i],p);
+		else return STRING_LENGTH_TOO_LONG;
 		i++;
-		if(i==MAX_STRING_BUFFER && p!=NULL) return STRING_BUFFER_OVERFLOW; 
-		else if(i==MAX_STRING_BUFFER) break;
+		if(i==NUM_STRING && p!=NULL) return STRING_BUFFER_OVERFLOW;
+		else if(i==NUM_STRING) break;
 	}
 	return STRING_OK;
-}
-
-StringStatus_t StrUtil_TokenKeyValue(char *String)
-{
-	if(!String) return STRING_NULL;
-	char *p;
-    // bypass the first string, which is key string
-	p = strtok(String,":=");
-	// get value string
-	p = strtok(NULL,":=");
-	//copy again to the String
-	if(strlen(p) < MAX_STRING_LENGTH){
-	    strcpy(String,p);
-	} else return STRING_TOKEN_LENGTH_TOO_LONG; 
 }
 
 StringStatus_t StrUtil_SearchKey(char *String, char* KeySearch)
 {
 	char *c;
-	for(uint8_t i=0;i<sizeof(MAX_STRING_BUFFER);i++)
+	for(uint8_t i=0;i<sizeof(NUM_STRING);i++)
 	{
 		c=strstr(ArrBuffStr[i],KeySearch);
 		if(c!=NULL) return STRING_KEY_FOUND;
@@ -62,7 +49,7 @@ void StrUtil_ReturnValueToString(char *s,StringStatus_t retVal)
         case STRING_KEY_NOT_FOUND: strcpy(s,"STRING_KEY_NOT_FOUND"); break;
         case STRING_OK: strcpy(s,"STRING_OK"); break;
         case STRING_BUFFER_OVERFLOW: strcpy(s,"STRING_BUFFER_OVERFLOW"); break;
-        case STRING_TOKEN_LENGTH_TOO_LONG: strcpy(s,"STRING_TOKEN_LENGTH_TOO_LONG"); break;
+        case STRING_LENGTH_TOO_LONG: strcpy(s,"STRING_LENGTH_TOO_LONG"); break;
         case STRING_INVALID_ARG: strcpy(s,"STRING_INVALID_ARG"); break;
         case STRING_NULL: strcpy(s,"STRING_NULL"); break;
     }
