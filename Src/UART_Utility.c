@@ -11,6 +11,7 @@
 
 UART_Utility_t *_util;
 
+
 void UART_Util_BeginToGetMessage(UART_Utility_t *utillity,UART_HandleTypeDef *huart,uint8_t *MesgBuffer,char *CharEndOfMessage)
 {
 	if(!utillity) return;
