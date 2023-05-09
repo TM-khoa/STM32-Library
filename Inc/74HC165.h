@@ -14,7 +14,7 @@
 #include "string.h"
 #include "stdbool.h"
 
-#define plPin		_hc165->PL.Pin
+#define plPin		_hc165->PL.Pin	//Using datasheet of Nexperia to define pin name
 #define cpPin		_hc165->CP.Pin
 //#define dsPin		_hc165->DS.Pin
 #define cePin		_hc165->CE.Pin
