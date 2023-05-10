@@ -33,7 +33,7 @@
 #define DELAY_MS(X) (HAL_Delay(X))
 
 
-typedef struct {
+typedef struct pinConfig{
 	GPIO_TypeDef *port;
 	uint16_t pin;
 }pinConfig;
