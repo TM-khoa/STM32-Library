@@ -22,7 +22,7 @@ AMS5915_Status_t AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c)
 	if(!ams && !hi2c) return AMS5915_INVALID_ARG;
 	ams->hi2c = hi2c;
 	ams->hi2c->Devaddress = AMS5915_ADDR << 1;
-	while(CHECK_DEVICE_READY!=HAL_OK);
+	while(AMS5915_CHECK_DEVICE_READY!=HAL_OK);
 	return AMS5915_OK;
 }
 
@@ -44,22 +44,23 @@ AMS5915_Status_t AMS5915_ReadRaw(AMS5915 *ams)
 {
 	if(!ams && !_ams) return AMS5915_INVALID_ARG;
 	if(ams) _ams = ams;
-	return READ_RAW_DATA;
+	if(AMS5915_READ_RAW_DATA == HAL_OK)
+	return AMS5915_OK;
 }
 
 /**
  * @brief Calculate pressure value from raw data stored in AMS5915 struct buf member.
  * @param ams Pointer to an AMS5915 struct to handle pressure sensor operations.
- * @return HAL_StatusTypeDef
- * @note Need to use void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) in main
+ * @return double
  */
-float AMS5915_CalPressure(AMS5915 *ams)
+double AMS5915_CalPressure(AMS5915 *ams)
 {
 	uint16_t sensp ;
-	float p, digout_p;
-	sensp = (AMS5915_digout_pmax - AMS5915_digout_pmin) / (AMS5915_pmax - AMS5915_pmin);
+	double p, digout_p;
+	while(AMS5915_ReadRaw(ams) != AMS5915_OK);
+	sensp = (AMS5915_DIGOUT_PMAX - AMS5915_DIGOUT_PMIN) / (AMS5915_PMAX - AMS5915_PMIN);
 	digout_p = ((ams->buf[0] & 0x3f) << 8) | (ams->buf[1]);
-	p = (digout_p - AMS5915_digout_pmin) / sensp + AMS5915_pmin;
+	p = (digout_p - AMS5915_DIGOUT_PMIN) / sensp + AMS5915_PMIN;
 	return p;
 }
 
