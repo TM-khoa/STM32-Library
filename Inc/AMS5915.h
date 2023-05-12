@@ -13,11 +13,11 @@
 #define AMS5915_ADDR 0x28
 #define AMS5915_MIN_PRES_MBAR -50.0f
 #define AMS5915_MAX_PRES_MBAR 50.0f
-#define AMS5915_SIZE_BUF 4
 #define AMS5915_PMAX   50
 #define AMS5915_PMIN  0
 #define AMS5915_DIGOUT_PMIN 1638
 #define AMS5915_DIGOUT_PMAX 14745
+#define AMS5915_SIZE_BUF 4
 
 
 
@@ -38,7 +38,7 @@ typedef enum{
 AMS5915_Status_t AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c);
 AMS5915_Status_t AMS5915_SetTarget(AMS5915 *ams);
 AMS5915_Status_t AMS5915_ReadRaw(AMS5915 *ams);
-float AMS5915_CalPressure(AMS5915 *ams);
+double AMS5915_CalPressure(AMS5915 *ams);
 
 #endif
 #endif /*  defined(CONFIG_USE_AMS5915) */
