@@ -11,20 +11,12 @@
 #include "main.h"
 #ifdef CONFIG_USE_PCF8563
 #include "stdbool.h"
-typedef struct PCF8563_Time
-{
-  uint8_t year;
-  uint8_t month;
-  uint8_t day;
-  uint8_t weekday;
-  uint8_t hour;
-  uint8_t minute;
-  uint8_t second;
-}PCF8563_Time;
+#include "RTC_Format.h"
+
 
 typedef struct PCF8563_Handle{
 	I2C_HandleTypeDef *hi2c;
-	PCF8563_Time t;
+	RTC_t t;
 }PCF8563_Handle;
 
 typedef enum
@@ -82,8 +74,8 @@ typedef enum
 #define pcfYear _pcf8563->t.year
 
 
-uint8_t PCF8563_ReadTimeRegisters();
-void PCF8563_WriteTimeRegisters(PCF8563_Time *t);
+RTC_t PCF8563_ReadTimeRegisters();
+void PCF8563_WriteTimeRegisters(RTC_t time);
 void PCF8563_CLKOUT_SetFreq(PCF8563_CLKOUT freq);
 void PCF8563_CLKOUT_Enable(bool Enable);
 void PCF8563_StartClock();

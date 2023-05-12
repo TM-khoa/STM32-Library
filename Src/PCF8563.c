@@ -78,55 +78,39 @@ uint8_t PCF8563_Read(uint8_t REG)
 }
 
 
-void PCF8563_WriteTimeRegisters(PCF8563_Time *time)
+void PCF8563_WriteTimeRegisters(RTC_t time)
 {
 	uint8_t t[8]={0};
-	if(time){
-		t[0] = DecToBCD(time->second);
-		t[1] = DecToBCD(time->minute);
-		t[2] = DecToBCD(time->hour);
-		t[3] = DecToBCD(time->day);
-		t[4] = DecToBCD(time->weekday);
-		t[5] = DecToBCD(time->month);
-		t[6] = DecToBCD(time->year);
-	} else {
-		t[0] = DecToBCD(pcfSecond);
-		t[1] = DecToBCD(pcfMinute);
-		t[2] = DecToBCD(pcfHour);
-		t[3] = DecToBCD(pcfDay);
-		t[4] = DecToBCD(pcfWeekday);
-		t[5] = DecToBCD(pcfMonth);
-		t[6] = DecToBCD(pcfYear);
+	t[0] = DecToBCD(time.second);
+	t[1] = DecToBCD(time.minute);
+	t[2] = DecToBCD(time.hour);
+	t[3] = DecToBCD(time.day);
+	t[4] = DecToBCD(time.weekday);
+	t[5] = DecToBCD(time.month);
+	t[6] = DecToBCD(time.year);
+	uint8_t temp[2];
+	for(uint8_t i = 0;i < PCF8563_TIME_REGISTER_RANGE;i++){
+		temp[0]=i+PCF8563_TIME_REGISTER_OFFSET;
+		temp[1]=t[i];
+		while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, temp, 2,HAL_MAX_DELAY)!=HAL_OK);
 	}
-	if(		t[0] < 60
-		&&  t[1] < 60
-		&&  t[2] < 24
-		&&  t[3] > 1 && t[3] < 32
-		&&  t[4] < 6
-		&&  t[5] > 1 && t[5] < 12
-		&&  t[6] < 99){
-	}
-		uint8_t temp[2];
-		for(uint8_t i = 0;i < PCF8563_TIME_REGISTER_RANGE;i++){
-			temp[0]=i+PCF8563_TIME_REGISTER_OFFSET;
-			temp[1]=t[i];
-			while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, temp, 2,HAL_MAX_DELAY)!=HAL_OK);
-		}
 }
-uint8_t PCF8563_ReadTimeRegisters()
+RTC_t PCF8563_ReadTimeRegisters()
 {
 	uint8_t i2cReceiveData[8];
 	uint8_t txData[1]={0x02};
 	HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, txData, 1,HAL_MAX_DELAY);
 	HAL_I2C_Master_Receive(PCF8563_I2C, PCF8563_I2C->Devaddress, i2cReceiveData, 7,HAL_MAX_DELAY);
-	pcfSecond = (BCDtoDec(i2cReceiveData[0]&0x7f));
-	pcfMinute = (BCDtoDec(i2cReceiveData[1]&0x7f));
-	pcfHour = (BCDtoDec(i2cReceiveData[2]&0x3f));
-	pcfDay = (BCDtoDec(i2cReceiveData[3]&0x3f));
-	pcfWeekday =(BCDtoDec(i2cReceiveData[4]&0x07));
-	pcfMonth = (BCDtoDec(i2cReceiveData[5]&0x3f));
-	pcfYear = (BCDtoDec(i2cReceiveData[6]));
-	return 0;
+	RTC_t time = {
+		.hour = (BCDtoDec(i2cReceiveData[2]&0x3f)),
+		.minute = (BCDtoDec(i2cReceiveData[1]&0x7f)),
+		.second = (BCDtoDec(i2cReceiveData[0]&0x7f)),
+		.day = (BCDtoDec(i2cReceiveData[3]&0x3f)),
+		.weekday = (BCDtoDec(i2cReceiveData[4]&0x07)),
+		.month = (BCDtoDec(i2cReceiveData[5]&0x3f)),
+		.year = (BCDtoDec(i2cReceiveData[6])),
+	};
+	return time;
 }
 
 void PCF8563_Write_OR(uint8_t Address, uint8_t data)
