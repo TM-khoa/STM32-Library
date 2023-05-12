@@ -10,7 +10,7 @@
 #include "main.h"
 #ifdef CONFIG_USE_FLAG
 
-#define CHECKFLAG(FlagGroup,FlagBit) (((FlagGroup) & (FlagBit) == (FlagBit)) ? 1 : 0)
+#define CHECKFLAG(FlagGroup,FlagBit) ((((FlagGroup) & (FlagBit)) == (FlagBit)) ? 1 : 0)
 #define SETFLAG(FlagGroup,FlagBit) ((FlagGroup) |= (FlagBit))
 #define CLEARFLAG(FlagGroup,FlagBit) (FlagGroup &= ~(FlagBit))
 

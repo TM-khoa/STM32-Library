@@ -25,7 +25,7 @@ void PCF8563_Init(PCF8563_Handle *rtc,I2C_HandleTypeDef *hi2c)
 	while(PCF8563_CHECKREADY!=HAL_OK);
 	PCF8563_Write_AND(Control_status_1, (uint8_t)~PCF8563_CTRL_STATUS1_TEST1);
 	PCF8563_Write_AND(Control_status_1, (uint8_t)~PCF8563_CTRL_STATUS1_TESTC);
-//	PCF8563_Write_AND(CLKOUT_control, (uint8_t)~PCF8563_CLKOUT_FE);
+	PCF8563_Write_AND(CLKOUT_control, (uint8_t)~PCF8563_CLKOUT_FE);
 	PCF8563_StopClock();
 }
 
