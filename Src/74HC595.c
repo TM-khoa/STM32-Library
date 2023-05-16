@@ -69,7 +69,7 @@ static inline void ByteSlitting(uint32_t value, uint8_t *byte_array, bool LSB_FI
  */
 HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST)
 {
-	if(!_hc595 && !n) return HC595_INVALID_ARG;
+	if(!_hc595 || !n) return HC595_INVALID_ARG;
 	if(n > HC595_MAX_CASCADE) return HC595_BEYOND_MAX_CASCADE;
 	// Use internal buffer to shift out if dt is NULL
 	uint8_t a;
