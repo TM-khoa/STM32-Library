@@ -32,6 +32,7 @@
 									((PIN) == HC165_CP)		? 	HAL_GPIO_WritePin(cpPort, cpPin, (LOGIC))	:	\
 									((PIN) == HC165_CE)		?	HAL_GPIO_WritePin(cePort, cePin, (LOGIC))	: 	0	\
 								)
+#define HC165_READ (HAL_GPIO_ReadPin(dataPort, dataPin))
 typedef struct HC165_PinConfig{
 	GPIO_TypeDef *Port;
 	uint16_t	Pin;
@@ -62,7 +63,7 @@ typedef enum{
 }HC165_Status_t;
 
 HC165_Status_t HC165_AssignPin(HC165 *p, GPIO_TypeDef *port, uint16_t pin, HC165_PinName pinName);
-HC165_Status_t HC165_ReadState(uint32_t *data, uint8_t n);
+uint32_t HC165_ReadState(uint8_t n);
 #endif
 
 #endif

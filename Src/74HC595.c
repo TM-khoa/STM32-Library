@@ -176,12 +176,12 @@ void HC595_TestPin(pinName pinName)
 	DELAY_MS(2000);
 }
 
-void HC595_Enable()
+void HC595_EnableOutput()
 {
 	HC595_WRITE(HC595_OE,0);
 }
 
-void HC595_Disable()
+void HC595_DisableOutput()
 {
 	HC595_WRITE(HC595_OE,1);
 }

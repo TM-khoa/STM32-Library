@@ -68,8 +68,8 @@ void HC595_ClearBitOutput(uint8_t pos);
 void HC595_SetByteOutput(uint32_t value);
 void HC595_ClearByteOutput(uint32_t value);
 void HC595_TestPin(pinName pin);
-void HC595_Disable();
-void HC595_Enable();
+void HC595_DisableOutput();
+void HC595_EnableOutput();
 void HC595_TestOutput();
 #endif /* INC_74HC595_H_ */
 #endif

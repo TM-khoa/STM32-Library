@@ -32,20 +32,22 @@ HC165_Status_t HC165_AssignPin(HC165 *hc165, GPIO_TypeDef *port, uint16_t pin, H
 	return HC165_OK;
 }
 
-HC165_Status_t HC165_ReadState(uint32_t *data, uint8_t n){
+uint32_t HC165_ReadState(uint8_t n)
+{
+	uint32_t data;
 	if (n > HC165_MAX_CASCADE)	return HC165_BEYOND_MAX_CASCADE;
 	if (!_hc165 && !n)	return HC165_INVALID_ARG;
-	*data = 0;
+	data = 0;
 	uint8_t value = 0;
 	HC165_WRITE(HC165_PL,0);
 	HC165_WRITE(HC165_PL,1);
 	for (int i = 0; i < 8*n; i++){
-		value = (HAL_GPIO_ReadPin(dataPort, dataPin));
-		*data |= value << ((8*n - 1) - i);
+		value = HC165_READ;
+		data |= value << ((8*n - 1) - i);
 		HC165_WRITE(HC165_CP,1);
 		HC165_WRITE(HC165_CP,0);
 	}
-	return HC165_OK;
+	return data;
 }
 
 #endif
