@@ -42,6 +42,19 @@ static inline uint32_t ByteMerging(const uint8_t *byte_ptr, bool LSB_FIRST) {
     return result;
 }
 
+
+/* value = 0x12345678
+ * LSB_FIRST = 1
+ * byte_array[0] = 0x78
+ * byte_array[1] = 0x56
+ * byte_array[2] = 0x34
+ * byte_array[3] = 0x12
+ * LSB_FIRST = 0
+ * byte_array[3] = 0x78
+ * byte_array[2] = 0x56
+ * byte_array[1] = 0x34
+ * byte_array[0] = 0x12
+ */
 static inline void ByteSlitting(uint32_t value, uint8_t *byte_array, bool LSB_FIRST)
 {
     for (uint8_t i = 0; i < 4; i++){
@@ -59,15 +72,16 @@ static inline void ByteSlitting(uint32_t value, uint8_t *byte_array, bool LSB_FI
  * The first 74HC595[0] that connected to MCU via pin 14(DS or serial data pin), pin 9 connected
  * to the next 74HC595.
  * The last 74HC595[n] pin 9 is not connect, pin 14 connected to previous 74HC595.
- * The first byte data will send to the last 74HC595[n]
- * The last byte data will send to the first 74HC595[0].
  *
  * @param dt Pointer to an array of uint8_t data to be shifted into the registers.
  * @param n Number of cascaded 74HC595 shift registers.
- * @param MSB_FIRST send MSB byte to the last HC595[n]
+ * @param Device0GetLSBByte send MSB byte (n-1) to the last HC595[n],
+ * LSB byte (byte 0) to the first HC595[0]
+ * The first byte data will send to the last 74HC595[n]
+ * The last byte data will send to the first 74HC595[0].
  * @return HC595_Status_t status code indicating the result of the operation.
  */
-HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST)
+HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t Device0GetLSBByte)
 {
 	if(!_hc595 || !n) return HC595_INVALID_ARG;
 	if(n > HC595_MAX_CASCADE) return HC595_BEYOND_MAX_CASCADE;
@@ -75,7 +89,7 @@ HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST)
 	uint8_t a;
 	if(!dt && n < 5) {
 	    uint8_t Temp[4];
-	    ByteSlitting(_hc595->data,Temp,MSB_FIRST);
+	    ByteSlitting(_hc595->data,Temp,Device0GetLSBByte);
 	    dt = Temp;
 	}
 	a = *(dt+(n-1));
@@ -91,8 +105,8 @@ HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST)
 	        a = *(dt+(i/8-1));
 	    }
 	}
-	HC595_WRITE(HC595_LATCH,0);
 	HC595_WRITE(HC595_LATCH,1);
+	HC595_WRITE(HC595_LATCH,0);
 	return HC595_OK;
 }
 
