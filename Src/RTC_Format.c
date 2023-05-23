@@ -10,7 +10,7 @@
 RTC_t RTC_GetTimeFromString(char *s)
 {
 	unsigned int hour,minute,second,day,month,year;
-	sscanf(s,"%u:%u:%u %u/%u/%u",&hour,&minute,&second,&day,&month,&year);
+	sscanf(s,"%u/%u/%u %u:%u:%u",&day,&month,&year,&hour,&minute,&second);
 	RTC_t t = {
 	.hour = hour,
 	.minute = minute,
@@ -24,5 +24,5 @@ RTC_t RTC_GetTimeFromString(char *s)
 void RTC_PackTimeToString(RTC_t *t, char *s)
 {
 	if (!t) return;
-	sprintf(s,"%u:%u:%u %u/%u/%u",t->hour,t->minute,t->second,t->day,t->month,t->year);
+	sprintf(s,"%u/%u/%u %u:%u:%u",t->day,t->month,t->year,t->hour,t->minute,t->second);
 }

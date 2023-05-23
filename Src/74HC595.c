@@ -118,14 +118,14 @@ void HC595_ClearBitOutput(uint8_t pos)
 	_hc595->data&=~(1UL<<pos);
 }
 
-void HC595_SetByteOutput(uint32_t value,uint8_t pos)
+void HC595_SetByteOutput(uint32_t value)
 {
-	_hc595->data|=value<<pos;
+	_hc595->data|=value;
 }
 
-void HC595_ClearByteOutput(uint32_t value,uint8_t pos)
+void HC595_ClearByteOutput(uint32_t value)
 {
-	_hc595->data&=~(value<<pos);
+	_hc595->data&=~(value);
 }
 
 HC595_Status_t HC595_SetTarget(HC595 *hc595)
