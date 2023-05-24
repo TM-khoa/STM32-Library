@@ -29,7 +29,8 @@ typedef enum
 
 typedef enum
 {
-    PCF8563_address  = 0x51,
+
+//	PCF8563_address  = 0x29,
     Control_status_1 = 0x00,
     Control_status_2 = 0x01,
     VL_seconds       = 0x02,
@@ -48,6 +49,8 @@ typedef enum
     Timer            = 0x0F,
 }registers;
 
+#define PCF8563_address (0x51 << 1)
+
 #define PCF8563_CTRL_STATUS1_TEST1 (1<<7)
 #define PCF8563_CTRL_STATUS1_STOP (1<<5)
 #define PCF8563_CTRL_STATUS1_TESTC (1<<3)
@@ -58,7 +61,7 @@ typedef enum
 #define PCF8563_CTRL_STATUS2_TIE (1<<0)
 #define PCF8563_CLKOUT_FE (1<<7)
 
-#define PCF8563_CHECKREADY HAL_I2C_IsDeviceReady(hi2c, (PCF8563_address << 1), 3, HAL_MAX_DELAY)
+#define PCF8563_CHECKREADY HAL_I2C_IsDeviceReady(hi2c, PCF8563_address, 3, HAL_MAX_DELAY)
 #define PCF8563_READ()
 #define PCF8563_WRITE_BIT(REG,BIT_MASK)
 #define PCF8563_TIME_REGISTER_OFFSET 2

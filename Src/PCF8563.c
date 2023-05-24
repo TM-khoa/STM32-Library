@@ -21,7 +21,6 @@ void PCF8563_Init(PCF8563_Handle *rtc,I2C_HandleTypeDef *hi2c)
 	_pcf8563 = rtc;
 	if(hi2c) _pcf8563->hi2c = hi2c;
 	else {if(!_pcf8563->hi2c) return;}
-	_pcf8563->hi2c->Devaddress = PCF8563_address << 1;
 	while(PCF8563_CHECKREADY!=HAL_OK);
 	PCF8563_Write_AND(Control_status_1, (uint8_t)~PCF8563_CTRL_STATUS1_TEST1);
 	PCF8563_Write_AND(Control_status_1, (uint8_t)~PCF8563_CTRL_STATUS1_TESTC);
@@ -65,14 +64,14 @@ void PCF8563_CLKOUT_SetFreq(PCF8563_CLKOUT freq)
 static void PCF8563_Write(uint8_t REG,uint8_t Value)
 {
 	uint8_t i2cTXData[2]={REG,Value};
-	while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, i2cTXData, 2,HAL_MAX_DELAY)!=HAL_OK);
+	while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_address , i2cTXData, 2,HAL_MAX_DELAY)!=HAL_OK);
 }
 
 uint8_t PCF8563_Read(uint8_t REG)
 {
 	uint8_t i2cReceiveData[1];
-	HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, &REG, 1,HAL_MAX_DELAY);
-	HAL_I2C_Master_Receive(PCF8563_I2C, PCF8563_I2C->Devaddress, i2cReceiveData, 1,HAL_MAX_DELAY);
+	HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_address , &REG, 1,HAL_MAX_DELAY);
+	HAL_I2C_Master_Receive(PCF8563_I2C, PCF8563_address , i2cReceiveData, 1,HAL_MAX_DELAY);
 	return i2cReceiveData[0];
 }
 
@@ -91,15 +90,15 @@ void PCF8563_WriteTimeRegisters(RTC_t time)
 	for(uint8_t i = 0;i < PCF8563_TIME_REGISTER_RANGE;i++){
 		temp[0]=i+PCF8563_TIME_REGISTER_OFFSET;
 		temp[1]=t[i];
-		while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, temp, 2,HAL_MAX_DELAY)!=HAL_OK);
+		while(HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_address , temp, 2,HAL_MAX_DELAY)!=HAL_OK);
 	}
 }
 RTC_t PCF8563_ReadTimeRegisters()
 {
 	uint8_t i2cReceiveData[8];
 	uint8_t txData[1]={0x02};
-	HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_I2C->Devaddress, txData, 1,HAL_MAX_DELAY);
-	HAL_I2C_Master_Receive(PCF8563_I2C, PCF8563_I2C->Devaddress, i2cReceiveData, 7,HAL_MAX_DELAY);
+	HAL_I2C_Master_Transmit(PCF8563_I2C, PCF8563_address , txData, 1,HAL_MAX_DELAY);
+	HAL_I2C_Master_Receive(PCF8563_I2C, PCF8563_address , i2cReceiveData, 7,HAL_MAX_DELAY);
 	RTC_t time = {
 		.hour = (BCDtoDec(i2cReceiveData[2]&0x3f)),
 		.minute = (BCDtoDec(i2cReceiveData[1]&0x7f)),

@@ -21,7 +21,6 @@ AMS5915_Status_t AMS5915_Init(AMS5915 *ams, I2C_HandleTypeDef *hi2c)
 {
 	if(!ams && !hi2c) return AMS5915_INVALID_ARG;
 	ams->hi2c = hi2c;
-	ams->hi2c->Devaddress = AMS5915_ADDR << 1;
 	_ams = ams;
 	while(AMS5915_CHECK_DEVICE_READY!=HAL_OK);
 	return AMS5915_OK;
@@ -58,7 +57,7 @@ double AMS5915_CalPressure(AMS5915 *ams)
 {
 	uint16_t sensp ;
 	double p, digout_p;
-//	while(AMS5915_ReadRaw(ams) != AMS5915_OK);
+	while(AMS5915_ReadRaw(ams) != AMS5915_OK);
 	sensp = (AMS5915_DIGOUT_PMAX - AMS5915_DIGOUT_PMIN) / (AMS5915_PMAX - AMS5915_PMIN);
 	digout_p = ((ams->buf[0] & 0x3f) << 8) | (ams->buf[1]);
 	p = (digout_p - AMS5915_DIGOUT_PMIN) / sensp + AMS5915_PMIN;
