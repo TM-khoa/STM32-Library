@@ -15,7 +15,7 @@
 #define CLEARFLAG(FlagGroup,FlagBit) (FlagGroup &= ~(FlagBit))
 
 
-typedef uint8_t FlagGroup_t;
+typedef uint16_t FlagGroup_t;
 
 #endif /*CONFIG_USE_FLAG*/
 #endif /*_FLAG_H_*/
