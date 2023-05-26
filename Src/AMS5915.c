@@ -53,10 +53,10 @@ AMS5915_Status_t AMS5915_ReadRaw(AMS5915 *ams)
  * @param ams Pointer to an AMS5915 struct to handle pressure sensor operations.
  * @return double
  */
-double AMS5915_CalPressure(AMS5915 *ams)
+float AMS5915_CalPressure(AMS5915 *ams)
 {
 	uint16_t sensp ;
-	double p, digout_p;
+	float p, digout_p;
 	while(AMS5915_ReadRaw(ams) != AMS5915_OK);
 	sensp = (AMS5915_DIGOUT_PMAX - AMS5915_DIGOUT_PMIN) / (AMS5915_PMAX - AMS5915_PMIN);
 	digout_p = ((ams->buf[0] & 0x3f) << 8) | (ams->buf[1]);
