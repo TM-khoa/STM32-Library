@@ -14,16 +14,16 @@
 
 typedef struct RTC_t
 {
-  uint8_t year;
-  uint8_t month;
-  uint8_t day;
-  uint8_t weekday;
-  uint8_t hour;
-  uint8_t minute;
-  uint8_t second;
+  int8_t year;
+  int8_t month;
+  int8_t day;
+  int8_t weekday;
+  int8_t hour;
+  int8_t minute;
+  int8_t second;
 }RTC_t;
 
 RTC_t RTC_GetTimeFromString(char *s);
-void RTC_PackTimeToString(RTC_t *t, char *s);
+void RTC_PackTimeToString(RTC_t t, char *s);
 
 #endif /* INC_RTC_FORMAT_H_ */
