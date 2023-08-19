@@ -61,7 +61,7 @@ float AMS5915_CalPressure(AMS5915 *ams)
 	sensp = (AMS5915_DIGOUT_PMAX - AMS5915_DIGOUT_PMIN) / (AMS5915_PMAX - AMS5915_PMIN);
 	digout_p = ((ams->buf[0] & 0x3f) << 8) | (ams->buf[1]);
 	p = (digout_p - AMS5915_DIGOUT_PMIN) / sensp + AMS5915_PMIN;
-	return p;
+	return p*100;
 }
 
 #endif /* defined(CONFIG_USE_AMS5915) */

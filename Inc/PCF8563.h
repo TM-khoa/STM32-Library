@@ -86,7 +86,5 @@ void PCF8563_StopClock();
 void PCF8563_Init(PCF8563_Handle *rtc,I2C_HandleTypeDef *hi2c);
 
 uint8_t PCF8563_Read(uint8_t REG);
-void PCF8563_Write_AND(uint8_t Address, uint8_t data);
-void PCF8563_Write_OR(uint8_t Address, uint8_t data);
 #endif
 #endif /* INC_PCF8563_H_ */
