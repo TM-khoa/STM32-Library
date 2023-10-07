@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+
 typedef struct PID_Param{
 	//---------Input Parameters-----------//
     float e;
@@ -17,9 +18,7 @@ typedef struct PID_Param{
 	//---------Intergral Parameters-------//
     float kI;
     float uI;
-    float uI_Pre;
-    float uI_AboveLimit;
-    float uI_BelowLimit;
+    float kB;// gain value to control anti-windup of Intergral
 	//---------Derivative Parameters------//
     float kD;
     float uD;
@@ -28,11 +27,12 @@ typedef struct PID_Param{
     float alpha;
 	//---------Sum Parameters-------------//
     float u;
+    float uHat; // the result of 'u' value after passing "Saturation" stage
     float u_AboveLimit;
     float u_BelowLimit;
 
 }PID_Param;
 void PID_Init(PID_Param *pid);
-void PID_Cal(PID_Param *pid,double Target_set,double CurrVal_set);
+float PID_Cal(PID_Param *pid,float Target_set,float CurrVal_set);
 #endif
 #endif
