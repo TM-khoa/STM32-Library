@@ -1,7 +1,6 @@
 #ifndef _PID_H_
 #define _PID_H_
 #include "main.h"
-#ifdef CONFIG_USE_PID
 #include "math.h"
 #include <stdlib.h>
 #include <stdint.h>
@@ -32,7 +31,8 @@ typedef struct PID_Param{
     float u_BelowLimit;
 
 }PID_Param;
-void PID_Init(PID_Param *pid);
-float PID_Cal(PID_Param *pid,float Target_set,float CurrVal_set);
-#endif
+
+float PID_Calculate(PID_Param *pid, float setPoint, float currentValue);
+void PID_SetParameters(PID_Param *pid, float _kP, float _kI, float _kD, float _alpha);
+void PID_SetSaturate(PID_Param *pid, float uAbove, float uBelow);
 #endif

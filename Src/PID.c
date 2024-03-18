@@ -1,5 +1,5 @@
 #include "PID.h"
-#ifdef CONFIG_USE_PID
+
 
 #define e               pid->e
 #define e_Pre           pid->e_Pre
@@ -8,16 +8,16 @@
 #define uP              pid->uP
 #define kI              pid->kI
 #define uI              pid->uI
-#define kB				pid->kB
+#define kB							pid->kB
 #define kD              pid->kD
 #define uD              pid->uD
 #define uD_Fil          pid->uD_Fil
-#define uD_FilPre 		pid->uD_FilPre
-#define alpha   		pid->alpha
-#define u				pid->u
-#define uHat			pid->uHat
-#define u_AboveLimit 	pid->u_AboveLimit
-#define u_BelowLimit 	pid->u_BelowLimit
+#define uD_FilPre 			pid->uD_FilPre
+#define alpha   				pid->alpha
+#define u								pid->u
+#define uHat						pid->uHat
+#define u_AboveLimit 		pid->u_AboveLimit
+#define u_BelowLimit 		pid->u_BelowLimit
 
 /**
  * @brief Tính toán giá trị điện áp xuất ra bằng công thức PID
@@ -27,10 +27,10 @@
  * @return
  */
 
-float PID_Cal(PID_Param *pid,float Target_set,float CurrVal_set)
+float PID_Calculate(PID_Param *pid, float setPoint, float currentValue)
 {
 //-----------------------Input-------------------------//
-	e = Target_set - CurrVal_set;
+	e = setPoint - currentValue;
 	if(!kI) kB = 0;
 	else kB = 1/deltaT;
 
@@ -55,5 +55,14 @@ float PID_Cal(PID_Param *pid,float Target_set,float CurrVal_set)
 	else uHat = u;
 	return uHat;
 }
+void PID_SetParameters(PID_Param *pid, float _kP, float _kI, float _kD, float _alpha) {
+	kP = _kP;
+	kI = _kI;
+	kD = _kD;
+	alpha = _alpha;
+}
 
-#endif
+void PID_SetSaturate(PID_Param *pid, float uAbove, float uBelow) {
+	u_AboveLimit = uAbove;
+	u_BelowLimit = uBelow;
+}
