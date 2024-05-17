@@ -13,41 +13,33 @@
 #include "stdbool.h"
 #include "RTC_Format.h"
 
+typedef enum {
+	CLKOUT_32768_Hz,
+	CLKOUT_1024_Hz,
+	CLKOUT_32_Hz,
+	CLKOUT_1_Hz,
+} PCF8563_CLKOUT;
 
-typedef struct PCF8563_Handle{
-	I2C_HandleTypeDef *hi2c;
-	RTC_t t;
-}PCF8563_Handle;
-
-typedef enum
-{
-  CLKOUT_32768_Hz,
-  CLKOUT_1024_Hz,
-  CLKOUT_32_Hz,
-  CLKOUT_1_Hz,
-}PCF8563_CLKOUT;
-
-typedef enum
-{
+typedef enum {
 
 //	PCF8563_address  = 0x29,
-    Control_status_1 = 0x00,
-    Control_status_2 = 0x01,
-    VL_seconds       = 0x02,
-    Minutes          = 0x03,
-    Hours            = 0x04,
-    Days             = 0x05,
-    Weekdays         = 0x06,
-    Century_months   = 0x07,
-    Years            = 0x08,
-    Minute_alarm     = 0x09,
-    Hour_alarm       = 0x0A,
-    Day_alarm        = 0x0B,
-    Weekday_alarm    = 0x0C,
-    CLKOUT_control   = 0x0D,
-    Timer_control    = 0x0E,
-    Timer            = 0x0F,
-}registers;
+	Control_status_1 = 0x00,
+	Control_status_2 = 0x01,
+	VL_seconds = 0x02,
+	Minutes = 0x03,
+	Hours = 0x04,
+	Days = 0x05,
+	Weekdays = 0x06,
+	Century_months = 0x07,
+	Years = 0x08,
+	Minute_alarm = 0x09,
+	Hour_alarm = 0x0A,
+	Day_alarm = 0x0B,
+	Weekday_alarm = 0x0C,
+	CLKOUT_control = 0x0D,
+	Timer_control = 0x0E,
+	Timer = 0x0F,
+} registers;
 
 #define PCF8563_address (0x51 << 1)
 
@@ -76,6 +68,35 @@ typedef enum
 #define pcfWeekday _pcf8563->t.weekday
 #define pcfYear _pcf8563->t.year
 
+#ifdef __cplusplus
+
+class PCF8563 {
+	private:
+
+		I2C_HandleTypeDef *_i2c;
+		RTC_t t;
+		void WriteOR(uint8_t Address, uint8_t data);
+		void WriteAND(uint8_t Address, uint8_t data);
+
+	public:
+		void Begin(I2C_HandleTypeDef *hi2c);
+		void StartClock();
+		void StopClock();
+		void EnableCLKOUT(bool enable);
+		void SetFrequencyCLKOUT(PCF8563_CLKOUT freq);
+		RTC_t ReadTimeRegisters();
+		void WriteTimeRegisters(RTC_t time);
+		void WriteRegister(uint8_t REG, uint8_t Value);
+		uint8_t ReadRegister(uint8_t REG);
+};
+#endif
+
+#ifndef __cplusplus
+
+typedef struct PCF8563_Handle {
+		I2C_HandleTypeDef *hi2c;
+		RTC_t t;
+} PCF8563_Handle;
 
 RTC_t PCF8563_ReadTimeRegisters();
 void PCF8563_WriteTimeRegisters(RTC_t time);
@@ -83,8 +104,10 @@ void PCF8563_CLKOUT_SetFreq(PCF8563_CLKOUT freq);
 void PCF8563_CLKOUT_Enable(bool Enable);
 void PCF8563_StartClock();
 void PCF8563_StopClock();
-void PCF8563_Init(PCF8563_Handle *rtc,I2C_HandleTypeDef *hi2c);
+void PCF8563_Init(PCF8563_Handle *pcf, I2C_HandleTypeDef *hi2c);
 
 uint8_t PCF8563_Read(uint8_t REG);
+#endif
+
 #endif
 #endif /* INC_PCF8563_H_ */

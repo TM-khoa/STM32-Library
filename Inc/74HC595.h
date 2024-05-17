@@ -5,7 +5,6 @@
  *      Author: hoanganh
  */
 
-
 #ifndef INC_74HC595_H_
 #define INC_74HC595_H_
 #include "main.h"
@@ -32,45 +31,53 @@
 
 #define DELAY_MS(X) (HAL_Delay(X))
 
+typedef struct pinConfig {
+		GPIO_TypeDef *port;
+		uint16_t pin;
+} pinConfig;
 
-typedef struct pinConfig{
-	GPIO_TypeDef *port;
-	uint16_t pin;
-}pinConfig;
+typedef struct HC595 {
+		pinConfig ds;
+		pinConfig clk;
+		pinConfig latch;
+		pinConfig oe;
+		uint32_t data;
+} HC595;
 
-typedef struct HC595{
-	pinConfig ds;
-	pinConfig clk;
-	pinConfig latch;
-	pinConfig oe;
-	uint32_t data;
-}HC595;
-
-typedef enum{
+typedef enum HC595_PinName {
 	HC595_LATCH,
 	HC595_CLK,
 	HC595_DS,
 	HC595_OE
-}pinName;
+} HC595_PinName;
 
-typedef enum{
+typedef enum {
 	HC595_OK,
 	HC595_ERROR,
 	HC595_INVALID_ARG,
 	HC595_BEYOND_MAX_CASCADE,
-}HC595_Status_t;
+} HC595_Status_t;
 
-HC595_Status_t HC595_ShiftOut(uint8_t *dt,uint8_t n,uint8_t MSB_FIRST);
-HC595_Status_t HC595_AssignPin(HC595* dev,GPIO_TypeDef *port,uint16_t pin, pinName pinName);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+HC595_Status_t HC595_ShiftOut(uint8_t *dt, uint8_t n, uint8_t MSB_FIRST);
+HC595_Status_t HC595_AssignPin(HC595 *dev, GPIO_TypeDef *port, uint16_t pin, HC595_PinName HC595_PinName);
 HC595_Status_t HC595_SetTarget(HC595 *hc595);
 void HC595_SetBitOutput(uint8_t pos);
 void HC595_ClearBitOutput(uint8_t pos);
 void HC595_SetByteOutput(uint32_t value);
 void HC595_ClearByteOutput(uint32_t value);
-void HC595_TestPin(pinName pin);
+void HC595_TestPin(HC595_PinName pin);
 void HC595_DisableOutput();
 void HC595_EnableOutput();
 void HC595_TestOutput();
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* INC_74HC595_H_ */
 #endif
 

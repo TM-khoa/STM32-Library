@@ -33,37 +33,45 @@
 									((PIN) == HC165_CE)		?	HAL_GPIO_WritePin(cePort, cePin, (LOGIC))	: 	0	\
 								)
 #define HC165_READ (HAL_GPIO_ReadPin(dataPort, dataPin))
-typedef struct HC165_PinConfig{
-	GPIO_TypeDef *Port;
-	uint16_t	Pin;
-}HC165_PinConfig;
+typedef struct HC165_PinConfig {
+		GPIO_TypeDef *Port;
+		uint16_t Pin;
+} HC165_PinConfig;
 
-typedef struct HC165{
-	HC165_PinConfig PL;
-	HC165_PinConfig CP;
+typedef struct HC165_t {
+		HC165_PinConfig PL;
+		HC165_PinConfig CP;
 //	HC165_PinConfig DS;
-	HC165_PinConfig CE;
-	HC165_PinConfig DATA;
-}HC165;
+		HC165_PinConfig CE;
+		HC165_PinConfig DATA;
+} HC165_t;
 
-typedef enum{
+typedef enum {
 	HC165_PL,
 	HC165_CP,
 //	HC165_DS,
 	HC165_CE,
 	HC165_DATA
-}HC165_PinName;
+} HC165_PinName;
 
-
-typedef enum{
+typedef enum {
 	HC165_OK,
 	HC165_ERROR,
 	HC165_INVALID_ARG,
 	HC165_BEYOND_MAX_CASCADE
-}HC165_Status_t;
+} HC165_Status_t;
 
-HC165_Status_t HC165_AssignPin(HC165 *p, GPIO_TypeDef *port, uint16_t pin, HC165_PinName pinName);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+HC165_Status_t HC165_AssignPin(HC165_t *p, GPIO_TypeDef *port, uint16_t pin, HC165_PinName pinName);
 uint32_t HC165_ReadState(uint8_t n);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 
 #endif
